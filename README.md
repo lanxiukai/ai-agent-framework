@@ -137,6 +137,17 @@ git clone <本仓库地址> && cd ai-agent-framework && opencode
 
 ---
 
+## 本地 MCP 工具（可选）
+
+配套仓库 [mcp-tools](https://github.com/your-org/mcp-tools) 提供基于本地模型的 MCP 工具，包括语音转文字（Qwen3-ASR）、文档 OCR 解析（GLM-OCR）、图片描述（QwenVision）。这些工具为可选补充，非必需品：
+
+- **适用**：纯文本模型（如 DeepSeek V3）需要多模态能力，或离线 / 隐私敏感的本地处理场景
+- **不必须**：多模态模型（GPT-4V、Claude Sonnet、Gemini）可直接使用原生视觉/音频能力处理同类任务
+
+详见 [AGENTS.md § 本地 MCP 工具](./AGENTS.md#本地-mcp-工具)。
+
+---
+
 ## 项目 idea 池
 
 本框架提供了项目 idea 模板 [`templates/project-ideas/TEMPLATE.md`](./templates/project-ideas/TEMPLATE.md)，可按此模板创建自己的项目 prompt。模板覆盖：学习目标、功能说明、前置知识、环境搭建、验证标准——**填完即用**。
@@ -194,6 +205,7 @@ git clone <本仓库地址> && cd ai-agent-framework && opencode
 
 | 版本 | 日期 | 主要变更 |
 |---|---|---|
+| v0.3.1 | 2026-05-11 | README 新增「本地 MCP 工具」小节，AGENTS.md 补充 MCP 工具可选性说明 |
 | v0.3.0 | 2026-05-11 | 同步约定重构（4 条硬规则 + 3 步操作流程）；框架开源脱敏（敏感路径占位符化、新增 private/ 个人文件管理）；AGENTS.md 全面同步（分支纪律、agent 边界、版本管理、同步约定） |
 
 ---
