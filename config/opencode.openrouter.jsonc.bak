@@ -1,0 +1,443 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  // ====================================================================
+  // Backup config: think-intensive agents (planner, reviewer,
+  // maintainer) use OpenRouter → Claude Opus 4.7 / Sonnet 4.6 with
+  // adaptive thinking; cost-intensive agents (builder, teacher, aide)
+  // keep DeepSeek for efficiency.
+  //
+  // Source template (config/opencode.jsonc, all-DeepSeek route): config/opencode.jsonc
+  // To switch: cp config/opencode.openrouter.jsonc.bak config/opencode.jsonc
+  //
+  // Note: this route is prone to OR↔Anthropic 502 hiccups on large
+  // PLAN.md writes (>20KB). See README "Known Risks & Escape Hatches".
+  //
+  // ⚠️ diff check: agent config (except model field) should match opencode.jsonc.
+  // After editing either file, diff their agent sections to confirm.
+  // ====================================================================
+
+  // ====================================================================
+  // MCP server configs. Replace <YOUR-CONDA-ENV-PYTHON> and <YOUR-MCP-SCRIPTS-DIR>
+  // with your local paths before use. For qwen3_asr and glm_ocr, the command
+  // should point to the Python binary inside the respective conda environment;
+  // args should reference the MCP server scripts directory.
+  // ====================================================================
+  "mcp": {
+    "gh_grep": {
+      "type": "remote",
+      "url": "https://mcp.grep.app",
+      "enabled": true
+    },
+    "qwen3_asr": {
+      "type": "local",
+      "command": "<YOUR-CONDA-ENV-PYTHON>",
+      "args": ["<YOUR-MCP-SCRIPTS-DIR>/asr/asr_mcp_server.py"],
+      "enabled": true,
+      "timeout": 15000
+    },
+    "glm_ocr": {
+      "type": "local",
+      "command": "<YOUR-CONDA-ENV-PYTHON>",
+      "args": ["<YOUR-MCP-SCRIPTS-DIR>/ocr/glm_ocr_mcp_server.py"],
+      "enabled": true,
+      "timeout": 15000
+    },
+    "qwen_vision": {
+      "type": "local",
+      "command": "<YOUR-CONDA-ENV-PYTHON>",
+      "args": ["<YOUR-MCP-SCRIPTS-DIR>/vl/vision_mcp_server.py"],
+      "enabled": true,
+      "timeout": 15000
+    }
+  },
+
+  "provider": {
+    "deepseek": {
+      "options": { "apiKey": "{env:DEEPSEEK_API_KEY}" },
+      "models": {
+        "deepseek-v4-pro": {
+          "name": "DeepSeek V4 Pro (1M)",
+          "limit": { "context": 1000000, "output": 384000 },
+          "options": {
+            "reasoning_effort": "max"
+          }
+        },
+        "deepseek-v4-flash": {
+          "name": "DeepSeek V4 Flash (1M)",
+          "limit": { "context": 1000000, "output": 384000 }
+        }
+      }
+    },
+    "openrouter": {
+      "npm": "@openrouter/ai-sdk-provider",
+      "name": "OpenRouter",
+      "options": { "apiKey": "{env:OPENROUTER_API_KEY}" },
+      "models": {
+        "anthropic/claude-opus-4.7": {
+          "name": "Claude Opus 4.7 (1M)",
+          "limit": { "context": 1000000, "output": 128000 },
+          "options": {
+            "thinking": { "type": "adaptive" }
+          }
+        },
+        "anthropic/claude-sonnet-4.6": {
+          "name": "Claude Sonnet 4.6 (1M)",
+          "limit": { "context": 1000000, "output": 64000 },
+          "options": {
+            "thinking": { "type": "adaptive" }
+          }
+        },
+        "openai/gpt-5.5": {
+          "name": "GPT-5.5 (1M)",
+          "limit": { "context": 1000000, "output": 128000 }
+        }
+      }
+    }
+  },
+
+  "agent": {
+    // Disable built-in primary agents — use custom planner/builder instead.
+    "build": { "disable": true },
+    "plan": { "disable": true },
+
+    "planner": {
+      "mode": "primary",
+      "model": "openrouter/anthropic/claude-opus-4.7",
+      "temperature": 1,
+      "maxTokens": 131072,
+      "maxSteps": 40,
+      "reasoning_effort": "max",
+      "prompt": "{file:./agent-prompts/planner.md}",
+      // planner writes PLAN.md + docs/** at user-confirmed project path (anywhere in repo).
+      // Note: opencode's edit permission covers all write operations (edit/write/patch/multiedit);
+      // use path-based allowlist for these targets, deny everything else.
+      // bash fully disabled (planner should never run commands).
+      // last-matching-rule-wins, so catch-all "*": "deny" must come first.
+      "permission": {
+        "websearch": "allow",
+        "webfetch": "allow",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "external_directory": "allow",
+        "bash": "deny",
+        "transcribe_audio": "allow",
+        "asr_status": "allow",
+        "ocr_glm": "allow",
+        "ocr_glm_status": "allow",
+        "describe_image": "allow",
+        "vision_status": "allow",
+        "edit": {
+          "*": "deny",
+          "**/PLAN.md": "allow",
+          "**/docs/**": "allow"
+        }
+      }
+    },
+
+    "builder": {
+      "mode": "primary",
+      "model": "deepseek/deepseek-v4-pro",
+      "maxTokens": 98304,
+      "maxSteps": 120,
+      "reasoning_effort": "max",
+      "prompt": "{file:./agent-prompts/builder.md}",
+      // builder works within the user-confirmed project directory (anywhere in repo).
+      // Prompt layer strictly constrains builder to only modify files under that directory.
+      // Dangerous commands / cross-project constraints enforced at prompt layer (builder.md).
+      // last-matching-rule-wins, so catch-all "*": "deny" must come first.
+      "permission": {
+        "websearch": "allow",
+        "webfetch": "allow",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "external_directory": "allow",
+        "transcribe_audio": "allow",
+        "asr_status": "allow",
+        "ocr_glm": "allow",
+        "ocr_glm_status": "allow",
+        "describe_image": "allow",
+        "vision_status": "allow",
+        "edit": {
+          "*": "deny",
+          "**": "allow"
+        }
+      }
+    },
+
+    "reviewer": {
+      "mode": "subagent",
+      "model": "openrouter/anthropic/claude-opus-4.7",
+      "temperature": 0,
+      "maxTokens": 65536,
+      "maxSteps": 20,
+      "reasoning_effort": "max",
+      "prompt": "{file:./agent-prompts/reviewer.md}",
+      // reviewer only writes REVIEW.md at the project directory (path received from builder).
+      // Source code / PLAN.md strictly off-limits.
+      // bash limited to read-only / verification commands; dangerous write ops hardened at config layer.
+      // Note: opencode permission is "last-matching-rule-wins", so catch-all rules
+      // must come first, specific allow/deny rules after them.
+      "permission": {
+        "websearch": "allow",
+        "webfetch": "allow",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "external_directory": "allow",
+        "transcribe_audio": "allow",
+        "asr_status": "allow",
+        "ocr_glm": "allow",
+        "ocr_glm_status": "allow",
+        "describe_image": "allow",
+        "vision_status": "allow",
+        "edit": {
+          "*": "deny",
+          "REVIEW.md": "allow",
+          "**/REVIEW.md": "allow"
+        },
+        "bash": {
+          "*": "allow",
+
+          "rm*": "deny",
+          "rmdir*": "deny",
+          "mv*": "deny",
+          "cp*": "deny",
+          "chmod*": "deny",
+          "chown*": "deny",
+          "sudo*": "deny",
+
+          "git commit*": "deny",
+          "git push*": "deny",
+          "git reset*": "deny",
+          "git rebase*": "deny",
+          "git merge*": "deny",
+          "git checkout*": "deny",
+          "git branch*": "deny",
+          "git tag*": "deny",
+          "git add*": "deny",
+          "git restore*": "deny",
+          "git stash*": "deny",
+
+          "pip install*": "deny",
+          "pip uninstall*": "deny",
+          "uv add*": "deny",
+          "uv remove*": "deny",
+          "uv pip install*": "deny",
+          "npm install*": "deny",
+          "pnpm install*": "deny",
+          "pnpm add*": "deny",
+          "pnpm remove*": "deny",
+          "yarn add*": "deny",
+          "cargo install*": "deny",
+          "cargo add*": "deny",
+          "cargo remove*": "deny",
+          "go install*": "deny",
+          "go get -u*": "deny"
+        }
+      }
+    },
+
+    "teacher": {
+      "mode": "subagent",
+      "model": "deepseek/deepseek-v4-pro",
+      "temperature": 0.7,
+      "maxTokens": 131072,
+      "maxSteps": 30,
+      "reasoning_effort": "max",
+      "prompt": "{file:./agent-prompts/teacher.md}",
+      // teacher is a subagent — builder invokes it after project delivery to generate learning materials.
+      // edit limited to learning-notes/ subdirectory at the project path (received from builder).
+      // bash disabled.
+      "permission": {
+        "websearch": "allow",
+        "webfetch": "allow",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "external_directory": "allow",
+        "bash": "deny",
+        "transcribe_audio": "allow",
+        "asr_status": "allow",
+        "ocr_glm": "allow",
+        "ocr_glm_status": "allow",
+        "describe_image": "allow",
+        "vision_status": "allow",
+        "edit": {
+          "*": "deny",
+          "**/learning-notes/**": "allow"
+        }
+      }
+    },
+
+    "aide": {
+      "mode": "subagent",
+      "model": "deepseek/deepseek-v4-flash",
+      "temperature": 0.1,
+      "maxTokens": 196608,
+      "maxSteps": 15,
+      "reasoning_effort": "max",
+      "prompt": "{file:./agent-prompts/aide.md}",
+      // aide is a subagent — maintainer invokes it for simple, repetitive,
+      // mechanical tasks (search, batch replace, statistics). Not for project
+      // code generation, prompt/config modification, or design decisions.
+      // read/glob/grep allowed for search & audit tasks; external_directory
+      // enables reading ~/.config/opencode and other framework related paths
+      // outside the workspace (e.g. user-level config audit).
+      // edit limited to *.md + docs/** + templates/**; agent-prompts/** + opencode.jsonc deny.
+      // bash restricted to read-only commands (write ops denied at config layer).
+      "permission": {
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "external_directory": "allow",
+        "transcribe_audio": "allow",
+        "asr_status": "allow",
+        "ocr_glm": "allow",
+        "ocr_glm_status": "allow",
+        "describe_image": "allow",
+        "vision_status": "allow",
+        "edit": {
+          "*": "deny",
+          "*.md": "allow",
+          "docs/**": "allow",
+          "templates/**": "allow"
+        },
+        "bash": {
+          "*": "allow",
+
+          "rm*": "deny",
+          "rmdir*": "deny",
+          "mv*": "deny",
+          "cp*": "deny",
+          "chmod*": "deny",
+          "chown*": "deny",
+          "sudo*": "deny",
+
+          "git commit*": "deny",
+          "git push*": "deny",
+          "git reset*": "deny",
+          "git rebase*": "deny",
+          "git merge*": "deny",
+          "git checkout*": "deny",
+          "git branch*": "deny",
+          "git tag*": "deny",
+          "git add*": "deny",
+          "git restore*": "deny",
+          "git stash*": "deny",
+
+          "pip install*": "deny",
+          "pip uninstall*": "deny",
+          "uv add*": "deny",
+          "uv remove*": "deny",
+          "uv pip install*": "deny",
+          "npm install*": "deny",
+          "pnpm install*": "deny",
+          "pnpm add*": "deny",
+          "pnpm remove*": "deny",
+          "yarn add*": "deny",
+          "cargo install*": "deny",
+          "cargo add*": "deny",
+          "cargo remove*": "deny",
+          "go install*": "deny",
+          "go get -u*": "deny"
+        }
+      }
+    },
+
+    "maintainer": {
+      "mode": "primary",
+      "model": "openrouter/anthropic/claude-opus-4.7",
+      "temperature": 0.3,
+      "maxTokens": 98304,
+      "maxSteps": 60,
+      "reasoning_effort": "max",
+      "prompt": "{file:./agent-prompts/maintainer.md}",
+      // maintainer is the repo-wide maintainer: spans framework and project layers.
+      // edit defaults to allow, but projects/** is hardened to deny — unless user
+      // explicitly mentions a project path or says "modify project files",
+      // maintainer cannot write anything under projects/. (Note: projects can live
+      // anywhere in the repo, but projects/ is still deny-by-default for maintainer.
+      // Temporarily lift this restriction when cross-project batch changes are needed.)
+      // bash strictly denies destructive write ops (modeled on reviewer's denylist,
+      // but maintainer additionally allows git commit / git tag / git stash / git restore
+      // for legitimate maintenance needs). Other constraints are enforced in
+      // agent-prompts/maintainer.md "Safety Net" section at the prompt level.
+      "permission": {
+        "websearch": "allow",
+        "webfetch": "allow",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "external_directory": "allow",
+        "transcribe_audio": "allow",
+        "asr_status": "allow",
+        "ocr_glm": "allow",
+        "ocr_glm_status": "allow",
+        "describe_image": "allow",
+        "vision_status": "allow",
+        "edit": {
+          "projects/**": "deny",
+          "*": "allow"
+        },
+        "bash": {
+          "*": "allow",
+
+          "rm*": "deny",
+          "rmdir*": "deny",
+          "mv*": "deny",
+          "chmod*": "deny",
+          "chown*": "deny",
+          "sudo*": "deny",
+
+          "git push --force*": "deny",
+          "git push -f*": "deny",
+          "git reset --hard*": "deny",
+          "git rebase*": "deny",
+          "git filter-branch*": "deny",
+          "git filter-repo*": "deny",
+          "git stash drop*": "deny",
+          "git stash clear*": "deny",
+
+          "pip install --break-system-packages*": "deny",
+          "pip install --user*": "deny",
+          "npm install -g*": "deny",
+          "pnpm add -g*": "deny",
+          "yarn global add*": "deny",
+          "cargo install*": "deny"
+        }
+      }
+    },
+
+    "maintainer_flash": {
+      "mode": "primary",
+      "model": "deepseek/deepseek-v4-flash",
+      "temperature": 0.3,
+      "maxTokens": 65536,
+      "maxSteps": 30,
+      "prompt": "{file:./agent-prompts/maintainer_flash.md}",
+      // maintainer_flash is a lightweight version of maintainer — same warehouse
+      // knowledge, read-only. For Q&A, code explanation, repo navigation. Cannot
+      // modify any files or run commands. Redirects write tasks to maintainer.
+      "permission": {
+        "websearch": "allow",
+        "webfetch": "allow",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "external_directory": "allow",
+        "transcribe_audio": "allow",
+        "asr_status": "allow",
+        "ocr_glm": "allow",
+        "ocr_glm_status": "allow",
+        "describe_image": "allow",
+        "vision_status": "allow",
+        "edit": {
+          "*": "deny"
+        },
+        "bash": "deny"
+      }
+    }
+  }
+}

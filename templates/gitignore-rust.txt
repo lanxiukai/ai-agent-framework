@@ -1,0 +1,18 @@
+# ============================================================
+# Rust / Cargo ignore fragment
+# Usage: cat templates/gitignore-rust.txt >> .gitignore
+# (repo-root .gitignore stays language-agnostic; append this when using Rust)
+# ============================================================
+
+# Generated files
+target/
+
+# Cargo.lock for library crates (let downstream users resolve)
+# Uncomment below if this project is a library crate:
+# Cargo.lock
+
+# OpenCode agent session log (not tracked)
+.session-log.md
+
+# IDE-specific Rust tooling
+.rustc_info.json

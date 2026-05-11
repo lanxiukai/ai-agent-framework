@@ -1,0 +1,43 @@
+# Python project ignore fragment
+# Usage: cat templates/gitignore-python.txt >> .gitignore
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg
+*.egg-info/
+.eggs/
+wheels/
+pip-wheel-metadata/
+
+# Unit test / coverage / type checker / linter cache
+.pytest_cache/
+.mypy_cache/
+.pyre/
+.pytype/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OpenCode agent session log (not tracked)
+.session-log.md
+
+# IDE-specific Python tooling
+.python-version

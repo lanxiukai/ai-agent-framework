@@ -1,0 +1,72 @@
+# ============================================================
+# Language-agnostic base (OS / editors / secrets / generic temp)
+# ============================================================
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editors / IDEs
+.idea/
+*.swp
+*.swo
+*~
+.cache/
+
+# Local secrets / environment variables (never commit, any language)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# Generic logs / temp artifacts
+*.log
+tmp/
+.tmp/
+
+# ============================================================
+# Python (global — can appear in any directory where Python runs)
+# ============================================================
+
+# Byte-compiled
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments (can be created at any level)
+.venv/
+venv/
+env/
+ENV/
+
+# Common tool caches (can appear at repo root)
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+
+# Python version manager
+.python-version
+
+# Jupyter
+.ipynb_checkpoints/
+
+# ============================================================
+# OpenCode multi-agent work artifacts
+# Session log (not tracked — per-session operation record)
+docs/.session-log.md
+# Tracked in git by default (as work log for traceability).
+# Uncomment the three lines below to ignore them:
+# projects/*/PLAN.md
+# projects/*/PROGRESS.md
+# projects/*/REVIEW.md
+
+# ============================================================
+# Personal files (hardware config, issue drafts, etc.)
+# Clone the template and fill in your own info:
+#   cp docs/developer-environment.template.md docs/developer-environment.md
+docs/developer-environment.md
+docs/private/

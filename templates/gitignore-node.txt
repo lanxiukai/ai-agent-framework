@@ -1,0 +1,23 @@
+# ============================================================
+# Node / pnpm / TypeScript ignore fragment (append to .gitignore)
+# ============================================================
+
+# Dependencies
+node_modules/
+
+# pnpm
+.pnpm-store/
+
+# TypeScript compiled output
+dist/
+tsconfig.tsbuildinfo
+
+# Vitest
+.vitest/
+coverage/
+
+# OpenCode agent session log (not tracked)
+.session-log.md
+
+# ESLint cache
+.eslintcache
