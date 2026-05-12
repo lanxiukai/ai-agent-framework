@@ -139,7 +139,7 @@ git clone <本仓库地址> && cd ai-agent-framework && opencode
 
 ## 本地 MCP 工具（可选）
 
-配套仓库 [mcp-tools](https://github.com/your-org/mcp-tools) 提供基于本地模型的 MCP 工具，包括语音转文字（Qwen3-ASR）、文档 OCR 解析（GLM-OCR）、图片描述（QwenVision）。这些工具为可选补充，非必需品：
+配套仓库 [mcp-tools](https://github.com/lanxiukai/mcp-tools)（`tag >= v0.2.1`）提供基于本地模型的 MCP 工具，包括语音转文字（Qwen3-ASR）、文档 OCR 解析（GLM-OCR）、图片描述（QwenVision）。这些工具为可选补充，非必需品：
 
 - **适用**：纯文本模型（如 DeepSeek V3）需要多模态能力，或离线 / 隐私敏感的本地处理场景
 - **不必须**：多模态模型（GPT-4V、Claude Sonnet、Gemini）可直接使用原生视觉/音频能力处理同类任务
@@ -205,6 +205,7 @@ git clone <本仓库地址> && cd ai-agent-framework && opencode
 
 | 版本 | 日期 | 主要变更 |
 |---|---|---|
+| v0.3.4 | 2026-05-13 | ASR 超时 3min→30min，全 agent `transcribe_podcast` 权限；README mcp-tools URL 修正 + 版本依赖标注 >= v0.2.1 |
 | v0.3.3 | 2026-05-12 | MCP config fix + maintainer 修漏（tag 流程强制 README 前置更新，config/README 合并 commit）|
 | v0.3.2 | 2026-05-12 | Token 精简：AGENTS.md -39%（删 MCP 重复文档/压缩同步与风险/合并 Git 约定），builder.md 删内嵌 PROGRESS.md 模板，4 agent 网络故障应对提取到 docs/common-protocols.md；每 session 启动省 ~1,800 tokens |
 | v0.3.1 | 2026-05-11 | README 新增「本地 MCP 工具」小节，AGENTS.md 补充 MCP 工具可选性说明 |
