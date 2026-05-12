@@ -32,22 +32,19 @@
     },
     "qwen3_asr": {
       "type": "local",
-      "command": "<YOUR-CONDA-ENV-PYTHON>",
-      "args": ["<YOUR-MCP-SCRIPTS-DIR>/asr/asr_mcp_server.py"],
+      "command": ["<YOUR-CONDA-ENV-PYTHON>", "<YOUR-MCP-SCRIPTS-DIR>/asr/asr_mcp_server.py"],
       "enabled": true,
-      "timeout": 15000
+      "timeout": 180000
     },
     "glm_ocr": {
       "type": "local",
-      "command": "<YOUR-CONDA-ENV-PYTHON>",
-      "args": ["<YOUR-MCP-SCRIPTS-DIR>/ocr/glm_ocr_mcp_server.py"],
+      "command": ["<YOUR-CONDA-ENV-PYTHON>", "<YOUR-MCP-SCRIPTS-DIR>/ocr/glm_ocr_mcp_server.py"],
       "enabled": true,
-      "timeout": 15000
+      "timeout": 180000
     },
     "qwen_vision": {
       "type": "local",
-      "command": "<YOUR-CONDA-ENV-PYTHON>",
-      "args": ["<YOUR-MCP-SCRIPTS-DIR>/vl/vision_mcp_server.py"],
+      "command": ["<YOUR-CONDA-ENV-PYTHON>", "<YOUR-MCP-SCRIPTS-DIR>/vl/vision_mcp_server.py"],
       "enabled": true,
       "timeout": 15000
     }
