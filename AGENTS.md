@@ -92,43 +92,16 @@ agent 在生成需要编号的文件或目录（如代码库模块目录、`docs
 
 ### 分支策略
 
-| 分支 | 用途 | 谁可以操作 |
+| 分支 | 用途 | 谁可操作 |
 |---|---|---|
-| `dev` | 日常开发，所有改动先合入此分支 | **所有 agent**（planner / builder / maintainer 均在 dev 上工作） |
-| `main` | 稳定发布版本，仅接收 `dev` 的 merge + push 到远程 | **仅 maintainer**，且需用户完整下令 |
+| `dev` | 日常开发，所有改动先合入此分支 | 所有 agent（planner / builder / maintainer 均在 dev 上工作） |
+| `main` | 稳定发布，仅接收 `dev` merge + push | 仅 maintainer（需用户完整下令） |
 
-> **硬性规则（违反即严重错误）**：
-> 1. **所有改动在 `dev` 上完成**——含 README 版本更新、文档、配置、prompts。`main` 只接受 `dev` 的 merge，**禁止任何 agent 直接 commit 到 `main`**。
-> 2. **commit 与 push 的默认分支**：用户说「提交」/「commit」→ 默认在 `dev` 上 commit。用户说「push」→ 默认指 push `main`，完整流程为：确保 `dev` 工作树干净 → merge `dev` 到 `main` →（如果用户要求打 tag 则打上）→ push `main` + tags → 立即切回 `dev`。
-> 3. **main 仅 maintainer 可操作**——planner / builder / maintainer_flash 不能操作 main。maintainer 也需用户完整下令（如「merge 到 main」/「push」）才动 main。
-> 4. **其他 primary agent 操作仓库前必须确认当前分支为 `dev`**——不在 `dev` 则拒绝操作并提醒用户切回。
-> 5. **仅 `main` 推送到 GitHub**——`dev` 仅本地开发，不推送远端。
+硬规则：所有改动在 `dev` 上 commit，禁止直接 commit 到 `main`；commit 默认 `dev`，push 默认 `main`（merge dev→main→push→切回 dev）；仅 main 推送 GitHub。
 
-### Commit Message 格式
+### Commit Message
 
-使用 Conventional Commits 风格，保证历史一致、可追溯：
-
-- **宿主仓库项目级 commit**（builder）：`<type>: T0X T0Y - <一句话概述>`
-  - 示例：`feat: T02 T03 - core stats and preprocessing`
-  - 示例：`fix: MF-01 - strip_frontmatter no longer .lstrip() body newlines`
-  - 项目收尾：`chore: project complete - all T01-T07 delivered`
-- **框架仓库 commit**（maintainer）：`<type>(scope): <描述>`
-  - 示例：`fix(config): correct reasoningEffort camelCase`
-  - 示例：`docs: add submodule usage instructions to AGENTS and README`
-
-类型前缀：`feat:` / `fix:` / `chore:` / `refactor:` / `docs:`
-
-### 红线
-
-- Commit message 必须真实反映改动——不写空话
-- 不写 AI 生成水印
-- 框架仓库改动与宿主仓库项目改动分开 commit——绝不混在一个 commit 里
-
-### 语言风格
-
-- 使用清晰、平实的书面语言，不过度口语化
-- 代码注释和 docstring 可以使用适度的对话风格增强可读性，但不含网络梗
-- 这是软要求——内容准确性和完整性优先，在此前提下注意措辞
+Conventional Commits：builder 用 `<type>: T0X T0Y - <概述>`，maintainer 用 `<type>(scope): <描述>`。类型：`feat/fix/chore/refactor/docs`。禁止空话和 AI 水印。框架与项目改动分开 commit。
 
 ## Agent 职责边界
 
@@ -173,109 +146,23 @@ agent 在生成需要编号的文件或目录（如代码库模块目录、`docs
 
 ### 规则 2：改一侧立即同步另一侧
 
-maintainer 修改上述任一文件后，**必须在同一次 session 内**将改动同步到另一侧的所有对应文件。禁止"先记下来稍后同步"。同步的操作步骤见 `agent-prompts/maintainer.md` Rule 2。
+maintainer 修改上述任一文件后，**必须在同一次 session 内**将改动同步到另一侧的所有对应文件。同步的操作步骤见 `agent-prompts/maintainer.md` Rule 2。
 
-### 规则 3：两侧差异仅限以下两类
+### 规则 3：两侧差异仅限路径格式与脱敏信息
 
-- **路径格式**：框架侧用相对路径（`{file:./agent-prompts/...}`），用户侧用本机绝对路径
-- **脱敏信息**：框架侧开源，用占位符（`<YOUR-CONDA-ENV-PYTHON>` 等）；用户侧填入本机实际值
-
-**除以上两类差异外，两侧文件的 agent 列表、permission 规则、model 配置、MCP 配置结构、所有文档段落，分毫不差。**
+框架侧用相对路径 + 占位符，用户侧用本机绝对路径 + 实际值。其余内容分毫不差。详见 `agent-prompts/maintainer.md`。
 
 ### 规则 4：框架内部两份 opencode.jsonc 同步
 
-`opencode.jsonc` 与 `opencode.openrouter.jsonc.bak` 的 model 字段可以不同，其余（agent 列表 / permission / 角色边界）必须一致。改一份必须同时改另一份。
+`config/` 下两份配置除 model 字段外必须一致，改一份同步另一份。
 
 ## 更新框架
 
-`git pull` 拉取框架新版本后，`agent-prompts/` 立即生效。但如果 `opencode.jsonc` 或 `AGENTS.md` 有结构变更，需 maintainer 按规则 2（框架侧 → 用户侧）手动同步到 `~/.config/opencode/`。
+`git pull` 拉取框架新版本后，`agent-prompts/` 立即生效。但如果 `opencode.jsonc` 或 `AGENTS.md` 有结构变更，需 maintainer 按规则 2 同步到 `~/.config/opencode/`。
 
 ## 本地 MCP 工具
 
-以下 MCP (Model Context Protocol) 工具在用户级配置中启用，所有 agent 均可通过标准 tool call 调用。每个 MCP server 可调用多个 tool，tool 的描述和参数由 MCP 协议自动传递给 agent。
-
-> **这些 MCP 工具为可选补充，非必需品**。多模态模型（如 GPT-4V、Claude Sonnet、Gemini）拥有原生视觉/音频理解能力，可直接处理同类任务。本地工具适用于纯文本模型、离线环境，或需要本地计算保障隐私/零成本的场景。
-
-### gh_grep — GitHub 代码搜索
-
-| 属性 | 值 |
-|---|---|
-| 类型 | 远程 MCP (`https://mcp.grep.app`) |
-| Tool | `gh_grep_searchGitHub` |
-| 用途 | 搜索公开 GitHub 仓库中的真实代码示例，辅助 agent 学习不熟悉的 API / 框架用法 |
-
-### qwen3_asr — 语音转文字 (ASR)
-
-| 属性 | 值 |
-|---|---|
-| 命令 | `qwen-asr` conda 环境 → `asr/asr_mcp_server.py` |
-| Tools | `transcribe_audio`, `asr_status` |
-| REST 端口 | `8000` |
-| 模型 | Qwen3-ASR-1.7B，支持 52 种语言 |
-| 音频格式 | WAV, MP3, FLAC, OGG 等 |
-
-**自动唤醒**：首次调用 `transcribe_audio` 时，MCP server 会检测 ASR REST 服务是否在线（`localhost:8000/health`）。离线则自动执行 `asr/qwen3_asr_start.sh` 后台启动，轮询等待就绪（最长 60s）。
-
-**用法示例**：
-```
-transcribe_audio("/home/user/recording.wav")
-transcribe_audio("/home/user/interview.mp3", language="zh")
-asr_status()                       -- 返回服务状态和 GPU 信息
-```
-
-### glm_ocr — 文档 OCR 解析
-
-| 属性 | 值 |
-|---|---|
-| 命令 | `glm-ocr` conda 环境 → `ocr/glm_ocr_mcp_server.py` |
-| Tools | `ocr_glm`, `ocr_glm_status` |
-| REST 端口 | `8002` |
-| 模型 | GLM-OCR (0.9B VLM)，显存占用约 2.5 GB |
-| 文档格式 | PNG, JPG, BMP, TIFF, WEBP, PDF |
-| 输出 | Markdown（含 LaTeX 公式 + 表格），支持中英文、手写体 |
-
-**自动唤醒**：首次调用 `ocr_glm` 时，MCP server 会检测 OCR REST 服务是否在线（`localhost:8002/health`）。离线则自动执行 `ocr/glm_ocr_start.sh` 后台启动，轮询等待就绪（最长 90s；首次需加载模型约 3s，后续重启约 2s）。
-
-**空闲超时**：REST 服务 30s 无请求后自动停止释放 GPU。下次调用时自动重启，对 agent 透明——agent 不需要关心 OCR 服务的启停，只需调用 `ocr_glm()` 即可。
-
-**用法示例**：
-```
-ocr_glm("/home/user/document.pdf")                       -- 返回 Markdown
-ocr_glm("/home/user/photo.png", output_format="json")     -- 返回完整 JSON（含逐页详情）
-ocr_glm_status()                                          -- 返回服务状态和 GPU 信息
-```
-
-### qwen_vision — 视觉理解 / 图像描述
-
-| 属性 | 值 |
-|---|---|
-| 命令 | `glm-ocr` conda 环境 → `vl/vision_mcp_server.py` |
-| Tools | `describe_image`, `vision_status` |
-| REST 端口 | `8080` |
-| 模型 | Qwen3.6-35B-A3B（MoE VLM，Q4_K_XL） |
-| 图像格式 | PNG, JPG/JPEG, GIF, BMP, WEBP |
-| 输出 | JSON `{description, model, tokens_used}`，英文自然语言 |
-
-**自动唤醒**：首次调用 `describe_image` 时，MCP server 会检测 Vision REST 服务是否在线（`localhost:8080/health`）。离线则自动执行 `vl/llama_start.sh` 后台启动，轮询等待就绪（最长时间 120s）。
-
-**空闲超时**：不支持（llama-server 为独立进程，不设自动退出；需手动 `vl/llama_start.sh stop`）。
-
-**用法示例**：
-```
-describe_image("/home/user/photo.jpg")                     -- 返回图像描述
-describe_image("/home/user/photo.jpg", detail="high")      -- 高细节描述
-vision_status()                                            -- 返回服务状态和 GPU 信息
-```
-
-### 本地 MCP 依赖的 conda 环境
-
-| MCP | conda 环境 | 关键依赖 |
-|---|---|---|
-| `qwen3_asr` | `qwen-asr` | PyTorch, Transformers, FastAPI, MCP |
-| `glm_ocr` | `glm-ocr` | PyTorch, Transformers >= 5.3.0, FastAPI, MCP |
-| `qwen_vision` | `glm-ocr` | httpx, FastMCP, MCP |
-
-> MCP server 进程由 OpenCode 自动管理（启动/停止），agent 无需手动操作。REST 后端服务的启停由 MCP server 内部的自动唤醒逻辑处理。
+MCP 工具描述（tool 名称、参数、用法）通过 MCP 协议自动注入给 agent，本文件中不重复列出。MCP server 的 conda 环境依赖见用户级配置 `opencode.jsonc`。
 
 ## 设计原则
 
@@ -291,26 +178,6 @@ vision_status()                                            -- 返回服务状态
 
 > 工程法则（agent 必读）：[`docs/agent-rules.md`](./docs/agent-rules.md)
 
-## 仓库维护策略
+## 已知风险
 
-以下策略适用于所有使用本框架的仓库：
-
-### Tag 与版本管理
-
-- **Tag 上限**：任何仓库的本地和远程 tag 只保留最新 10 个。打出新 tag 后，删除第 11 个及更早的旧 tag（远程删除前向用户确认）。
-- **README 版本表裁剪**：`README.md` 的"版本更新"表格只显示最新 10 行记录，与 tag 数量对齐。
-- **执行者**：此策略由 `maintainer` agent 在执行 tag 操作时自动落实（见 `agent-prompts/maintainer.md` Rule 6）。
-
-## 已知风险与逃生通道
-
-### 1. 同 session Tab 切换可能不刷新 system prompt
-
-**应对**：每个 agent 一个 session。切换 agent 时退出重新 `opencode` 进入，确保 system prompt 正确加载。
-
-### 2. 终端被 kill 不会丢 session
-
-opencode session 持久化到 `~/.local/share/opencode/`。`opencode -c` 重新连接最近一次 session。
-
-### 3. 内置 Build / Plan agent ≠ 自定义 builder / planner
-
-opencode TUI 同时存在两套 agent。内置的不受本仓库约束——可以在工作流死锁时作为逃生通道。
+3 种已知风险与逃生通道详见 [`docs/known-risks.md`](./docs/known-risks.md)（同 session Tab 切换 / 终端 kill 不丢 session / 内置 vs 自定义 agent）。

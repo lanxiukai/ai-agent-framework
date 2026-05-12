@@ -205,6 +205,7 @@ git clone <本仓库地址> && cd ai-agent-framework && opencode
 
 | 版本 | 日期 | 主要变更 |
 |---|---|---|
+| v0.3.2 | 2026-05-12 | Token 精简：AGENTS.md -39%（删 MCP 重复文档/压缩同步与风险/合并 Git 约定），builder.md 删内嵌 PROGRESS.md 模板，4 agent 网络故障应对提取到 docs/common-protocols.md；每 session 启动省 ~1,800 tokens |
 | v0.3.1 | 2026-05-11 | README 新增「本地 MCP 工具」小节，AGENTS.md 补充 MCP 工具可选性说明 |
 | v0.3.0 | 2026-05-11 | 同步约定重构（4 条硬规则 + 3 步操作流程）；框架开源脱敏（敏感路径占位符化、新增 private/ 个人文件管理）；AGENTS.md 全面同步（分支纪律、agent 边界、版本管理、同步约定） |
 

@@ -34,13 +34,7 @@
 
 ### 网络 / Provider 故障应对
 
-LLM provider 链路有时会出现 `502 / provider_unavailable / Tool execution aborted` 这类瞬时故障，常见于 `write` / `edit` 这类工具调用切换的瞬间。
-
-- **首次失败**：直接重试一次，70-80% 概率成功。**不要**重新分析、不要重新规划——内容已在 context 里，简短重试即可。
-- **连续失败 ≥ 3 次**：写到 `PROGRESS.md` 的 "Blocked" 区，向用户求助。可以建议用户用以下逃生通道之一：
-  1. **切到 opencode 内置的 `Build` agent**（如果用户已把它默认模型改成与你不同的 provider，比如你用 OpenRouter / 内置 Build 用 DeepSeek）协助执行写入。**要明确：你已经规划好的内容由 Build 充当"执行器"落盘，内容仍是你的产出，不破坏角色边界。**
-  2. **切到对话输出模式**：把要写入文件的整篇内容用 ` ```<lang> ... ``` ` 代码块贴在对话里，由用户人工保存，绕过工具调用链路完全不依赖 provider。
-- **永远不要**因为网络故障而修改设计或简化任务——故障是临时的，下一次重试就好。
+` write` / `edit` 调用时偶发 `502 / provider_unavailable`。应对策略见 `docs/common-protocols.md`；连续失败 ≥3 次时额外写到 `PROGRESS.md` 的 "Blocked" 区。
 
 ### 给生成的代码 / 测试 / 脚本的要求
 
@@ -55,37 +49,7 @@ LLM provider 链路有时会出现 `502 / provider_unavailable / Tool execution 
 
 ## PROGRESS.md 结构
 
-`PROGRESS.md` 是你的工作日志，**追加模式**（不要覆盖、不要删历史条目）。最小骨架（首次创建时按此建好四个小节，内容为空也要保留标题）：
-
-```markdown
-# PROGRESS Log
-
-## Done
-（每完成一个 task 追加一行）
-2026-04-26 17:30 | T01 | done | 实现 <module>.<function> + 单测
-
-## Blocked
-（被 bug / 环境 / 外部依赖卡住的事项）
-2026-04-26 18:10 | T03 | bug | 测试框架 fixture / mock / setup 报错，已尝试 X、Y、Z 都不行，求助
-
-## Plan-Issue
-（你判断 PLAN.md 本身有缺陷的事项——会触发计划层面的回退）
-2026-04-26 18:20 | T05 | plan | 验收标准"返回 utf-8 字符串"与"签名 → bytes"矛盾
-
-## Need-Approval
-（请求用户批准的事项，例如新依赖、范围变更）
-2026-04-26 17:50 | T02 | dep | 需引入新依赖 <package> <version>，原因：…
-
-## Review-Round
-（记录每轮 review 的结论）
-| 轮次 | 批次 | 结论 | 关键发现 |
-|---|---|---|---|
-| 1 | T01-T03 | NEEDS-FIX | MF-01: … |
-```
-
-每行格式统一：`<时间戳> | <Task ID> | <分类> | <一句话>`。`<分类>` 取值：`done` / `bug` / `plan` / `dep` 等，写到对应小节下面。
-
-> 首次创建 PROGRESS.md 时，**必须先读** `templates/PROGRESS.md` 脚手架（包含上述 5 节骨架），按模板格式写入。
+`PROGRESS.md` 是你的工作日志，**追加模式**（不覆盖、不删历史条目）。格式参见 `templates/PROGRESS.md`（5 节骨架：Done / Blocked / Plan-Issue / Need-Approval / Review-Round）。每行：`<时间戳> | <Task ID> | <分类> | <一句话>`。首次创建时按模板格式写入。
 
 ## 工作流程
 
