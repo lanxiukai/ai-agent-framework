@@ -87,6 +87,10 @@
         "openai/gpt-5.5": {
           "name": "GPT-5.5 (1M)",
           "limit": { "context": 1000000, "output": 128000 }
+        },
+        "google/gemini-3.1-pro-preview": {
+          "name": "Gemini 3.1 Pro Preview (1M)",
+          "limit": { "context": 1000000, "output": 128000 }
         }
       }
     }
@@ -442,6 +446,224 @@
         },
         "bash": "deny"
       }
+    },
+
+    // ==================================================================
+    // Three independent AI consultant subagents — invoked only by maintainer
+    // on explicit user instruction. Each uses a different frontier model via
+    // OpenRouter for multi-perspective independent analysis.
+    // Consultants can read anything but may only write reports to docs/consults/.
+    // ==================================================================
+
+    // consultant_1 — Claude Opus 4.7
+    // reasoning_effort: "xhigh" (deepest adaptive reasoning)
+    "consultant_1": {
+      "mode": "subagent",
+      "model": "openrouter/anthropic/claude-opus-4.7",
+      "temperature": 0.3,
+      "maxTokens": 131072,
+      "maxSteps": 40,
+      "reasoning_effort": "xhigh",
+      "prompt": "{file:./agent-prompts/consultant_1.md}",
+      "permission": {
+        "websearch": "allow",
+        "webfetch": "allow",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "external_directory": "allow",
+        "transcribe_audio": "allow",
+        "transcribe_podcast": "allow",
+        "asr_status": "allow",
+        "ocr_glm": "allow",
+        "ocr_glm_status": "allow",
+        "describe_image": "allow",
+        "vision_status": "allow",
+        "edit": {
+          "*": "deny",
+          "docs/consults/**": "allow"
+        },
+        "bash": {
+          "*": "allow",
+
+          "rm*": "deny",
+          "rmdir*": "deny",
+          "mv*": "deny",
+          "cp*": "deny",
+          "chmod*": "deny",
+          "chown*": "deny",
+          "sudo*": "deny",
+
+          "git commit*": "deny",
+          "git push*": "deny",
+          "git reset*": "deny",
+          "git rebase*": "deny",
+          "git merge*": "deny",
+          "git checkout*": "deny",
+          "git branch*": "deny",
+          "git tag*": "deny",
+          "git add*": "deny",
+          "git restore*": "deny",
+          "git stash*": "deny",
+
+          "pip install*": "deny",
+          "pip uninstall*": "deny",
+          "uv add*": "deny",
+          "uv remove*": "deny",
+          "uv pip install*": "deny",
+          "npm install*": "deny",
+          "pnpm install*": "deny",
+          "pnpm add*": "deny",
+          "pnpm remove*": "deny",
+          "yarn add*": "deny",
+          "cargo install*": "deny",
+          "cargo add*": "deny",
+          "cargo remove*": "deny",
+          "go install*": "deny",
+          "go get -u*": "deny"
+        }
+      }
+    },
+
+    // consultant_2 — GPT-5.5
+    // reasoning_effort: "xhigh" (deepest reasoning level)
+    "consultant_2": {
+      "mode": "subagent",
+      "model": "openrouter/openai/gpt-5.5",
+      "temperature": 0.3,
+      "maxTokens": 131072,
+      "maxSteps": 40,
+      "reasoning_effort": "xhigh",
+      "prompt": "{file:./agent-prompts/consultant_2.md}",
+      "permission": {
+        "websearch": "allow",
+        "webfetch": "allow",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "external_directory": "allow",
+        "transcribe_audio": "allow",
+        "transcribe_podcast": "allow",
+        "asr_status": "allow",
+        "ocr_glm": "allow",
+        "ocr_glm_status": "allow",
+        "describe_image": "allow",
+        "vision_status": "allow",
+        "edit": {
+          "*": "deny",
+          "docs/consults/**": "allow"
+        },
+        "bash": {
+          "*": "allow",
+
+          "rm*": "deny",
+          "rmdir*": "deny",
+          "mv*": "deny",
+          "cp*": "deny",
+          "chmod*": "deny",
+          "chown*": "deny",
+          "sudo*": "deny",
+
+          "git commit*": "deny",
+          "git push*": "deny",
+          "git reset*": "deny",
+          "git rebase*": "deny",
+          "git merge*": "deny",
+          "git checkout*": "deny",
+          "git branch*": "deny",
+          "git tag*": "deny",
+          "git add*": "deny",
+          "git restore*": "deny",
+          "git stash*": "deny",
+
+          "pip install*": "deny",
+          "pip uninstall*": "deny",
+          "uv add*": "deny",
+          "uv remove*": "deny",
+          "uv pip install*": "deny",
+          "npm install*": "deny",
+          "pnpm install*": "deny",
+          "pnpm add*": "deny",
+          "pnpm remove*": "deny",
+          "yarn add*": "deny",
+          "cargo install*": "deny",
+          "cargo add*": "deny",
+          "cargo remove*": "deny",
+          "go install*": "deny",
+          "go get -u*": "deny"
+        }
+      }
+    },
+
+    // consultant_3 — Gemini 3.1 Pro Preview
+    // reasoning_effort: "high" (xhigh maps down to high for Gemini 3)
+    "consultant_3": {
+      "mode": "subagent",
+      "model": "openrouter/google/gemini-3.1-pro-preview",
+      "temperature": 0.3,
+      "maxTokens": 131072,
+      "maxSteps": 40,
+      "reasoning_effort": "high",
+      "prompt": "{file:./agent-prompts/consultant_3.md}",
+      "permission": {
+        "websearch": "allow",
+        "webfetch": "allow",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "external_directory": "allow",
+        "transcribe_audio": "allow",
+        "transcribe_podcast": "allow",
+        "asr_status": "allow",
+        "ocr_glm": "allow",
+        "ocr_glm_status": "allow",
+        "describe_image": "allow",
+        "vision_status": "allow",
+        "edit": {
+          "*": "deny",
+          "docs/consults/**": "allow"
+        },
+        "bash": {
+          "*": "allow",
+
+          "rm*": "deny",
+          "rmdir*": "deny",
+          "mv*": "deny",
+          "cp*": "deny",
+          "chmod*": "deny",
+          "chown*": "deny",
+          "sudo*": "deny",
+
+          "git commit*": "deny",
+          "git push*": "deny",
+          "git reset*": "deny",
+          "git rebase*": "deny",
+          "git merge*": "deny",
+          "git checkout*": "deny",
+          "git branch*": "deny",
+          "git tag*": "deny",
+          "git add*": "deny",
+          "git restore*": "deny",
+          "git stash*": "deny",
+
+          "pip install*": "deny",
+          "pip uninstall*": "deny",
+          "uv add*": "deny",
+          "uv remove*": "deny",
+          "uv pip install*": "deny",
+          "npm install*": "deny",
+          "pnpm install*": "deny",
+          "pnpm add*": "deny",
+          "pnpm remove*": "deny",
+          "yarn add*": "deny",
+          "cargo install*": "deny",
+          "cargo add*": "deny",
+          "cargo remove*": "deny",
+          "go install*": "deny",
+          "go get -u*": "deny"
+        }
+      }
     }
+
   }
 }
