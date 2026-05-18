@@ -665,6 +665,76 @@
           "go get -u*": "deny"
         }
       }
+    },
+
+    // consultant_4 — DeepSeek V4 Pro
+    // reasoning_effort: "max"
+    "consultant_4": {
+      "mode": "subagent",
+      "model": "deepseek/deepseek-v4-pro",
+      "temperature": 0.3,
+      "maxTokens": 131072,
+      "maxSteps": 40,
+      "reasoning_effort": "max",
+      "prompt": "{file:./agent-prompts/consultant_4.md}",
+      "permission": {
+        "websearch": "allow",
+        "webfetch": "allow",
+        "read": "allow",
+        "glob": "allow",
+        "grep": "allow",
+        "external_directory": "allow",
+        "transcribe_audio": "allow",
+        "transcribe_podcast": "allow",
+        "asr_status": "allow",
+        "ocr_glm": "allow",
+        "ocr_glm_status": "allow",
+        "describe_image": "allow",
+        "vision_status": "allow",
+        "edit": {
+          "*": "deny",
+          "docs/consults/**": "allow"
+        },
+        "bash": {
+          "*": "allow",
+
+          "rm*": "deny",
+          "rmdir*": "deny",
+          "mv*": "deny",
+          "cp*": "deny",
+          "chmod*": "deny",
+          "chown*": "deny",
+          "sudo*": "deny",
+
+          "git commit*": "deny",
+          "git push*": "deny",
+          "git reset*": "deny",
+          "git rebase*": "deny",
+          "git merge*": "deny",
+          "git checkout*": "deny",
+          "git branch*": "deny",
+          "git tag*": "deny",
+          "git add*": "deny",
+          "git restore*": "deny",
+          "git stash*": "deny",
+
+          "pip install*": "deny",
+          "pip uninstall*": "deny",
+          "uv add*": "deny",
+          "uv remove*": "deny",
+          "uv pip install*": "deny",
+          "npm install*": "deny",
+          "pnpm install*": "deny",
+          "pnpm add*": "deny",
+          "pnpm remove*": "deny",
+          "yarn add*": "deny",
+          "cargo install*": "deny",
+          "cargo add*": "deny",
+          "cargo remove*": "deny",
+          "go install*": "deny",
+          "go get -u*": "deny"
+        }
+      }
     }
 
   }
