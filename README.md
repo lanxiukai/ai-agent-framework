@@ -205,7 +205,8 @@ git clone <本仓库地址> && cd ai-agent-framework && opencode
 
 | 版本 | 日期 | 主要变更 |
 |---|---|---|
-| v0.3.6 | 2026-05-20 | 新增 consultant_4 独立 AI 顾问 subagent（DeepSeek V4 Pro），四顾问体系完善；maintainer 编辑权限简化：移除 `projects/**` 硬 deny，项目文件写保护改为纯 prompt 层约束 |\n| v0.3.5 | 2026-05-15 | 新增三位独立 AI 顾问 subagent（consultant_1/2/3），分别使用 Claude Opus 4.7 / GPT-5.5 / Gemini 3.1 Pro Preview；maintainer 仅用户显式指令下可调用 |
+| v0.3.6 | 2026-05-20 | 新增 consultant_4 独立 AI 顾问 subagent（DeepSeek V4 Pro），四顾问体系完善；maintainer 编辑权限简化：移除 `projects/**` 硬 deny，项目文件写保护改为纯 prompt 层约束 |
+| v0.3.5 | 2026-05-15 | 新增三位独立 AI 顾问 subagent（consultant_1/2/3），分别使用 Claude Opus 4.7 / GPT-5.5 / Gemini 3.1 Pro Preview；maintainer 仅用户显式指令下可调用 |
 | v0.3.4 | 2026-05-13 | ASR 超时 3min→30min，全 agent `transcribe_podcast` 权限；README mcp-tools URL 修正 + 版本依赖标注 >= v0.2.1 |
 | v0.3.3 | 2026-05-12 | MCP config fix + maintainer 修漏（tag 流程强制 README 前置更新，config/README 合并 commit）|
 | v0.3.2 | 2026-05-12 | Token 精简：AGENTS.md -39%（删 MCP 重复文档/压缩同步与风险/合并 Git 约定），builder.md 删内嵌 PROGRESS.md 模板，4 agent 网络故障应对提取到 docs/common-protocols.md；每 session 启动省 ~1,800 tokens |
