@@ -392,7 +392,6 @@
 
           "rm*": "deny",
           "rmdir*": "deny",
-          "mv*": "deny",
           "chmod*": "deny",
           "chown*": "deny",
           "sudo*": "deny",
