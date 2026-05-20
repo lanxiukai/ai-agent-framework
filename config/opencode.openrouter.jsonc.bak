@@ -361,11 +361,9 @@
       "reasoning_effort": "max",
       "prompt": "{file:./agent-prompts/maintainer.md}",
       // maintainer is the repo-wide maintainer: spans framework and project layers.
-      // edit defaults to allow, but projects/** is hardened to deny — unless user
-      // explicitly mentions a project path or says "modify project files",
-      // maintainer cannot write anything under projects/. (Note: projects can live
-      // anywhere in the repo, but projects/ is still deny-by-default for maintainer.
-      // Temporarily lift this restriction when cross-project batch changes are needed.)
+      // edit defaults to allow (project file writes are constrained at the prompt
+      // level via agent-prompts/maintainer.md "Safety Net" Rule 3.x — maintainer
+      // must not write project files without explicit user signal).
       // bash strictly denies destructive write ops (modeled on reviewer's denylist,
       // but maintainer additionally allows git commit / git tag / git stash / git restore
       // for legitimate maintenance needs). Other constraints are enforced in
@@ -385,7 +383,6 @@
         "describe_image": "allow",
         "vision_status": "allow",
         "edit": {
-          "projects/**": "deny",
           "*": "allow"
         },
         "bash": {
