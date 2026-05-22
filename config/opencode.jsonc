@@ -431,9 +431,10 @@
       "maxSteps": 30,
       "prompt": "{file:./agent-prompts/maintainer_flash.md}",
       // maintainer_flash is a lightweight version of maintainer — same warehouse
-      // knowledge, nearly read-only. Can write *.md files (notes, search results
-      // collation) but only after explicit user permission (prompt-level constraint).
-      // Cannot run bash or modify non-markdown files.
+      // knowledge. Can write *.md files (notes, search results) with user permission,
+      // but NOT framework files (agent-prompts/, docs/, templates/, AGENTS.md, README.md)
+      // and NOT opencode user config. Can run git read commands + add/commit/checkout
+      // (dev branch only, enforced at prompt level). No other bash.
       "permission": {
         "websearch": "allow",
         "webfetch": "allow",
@@ -450,9 +451,68 @@
         "vision_status": "allow",
         "edit": {
           "*": "deny",
-          "*.md": "allow"
+          "*.md": "allow",
+          // Explicitly deny framework markdown files to protect config/prompts/docs.
+          "agent-prompts/**": "deny",
+          "docs/**": "deny",
+          "templates/**": "deny",
+          "AGENTS.md": "deny",
+          "README.md": "deny"
         },
-        "bash": "deny"
+        "bash": {
+          "*": "deny",
+
+          // === git read-only ===
+          "git status": "allow",
+          "git diff": "allow",
+          "git diff *": "allow",
+          "git log": "allow",
+          "git log *": "allow",
+          "git show": "allow",
+          "git show *": "allow",
+          "git branch": "allow",
+          "git branch *": "allow",
+          "git ls-files": "allow",
+
+          // === git write (dev branch only, prompt-enforced) ===
+          "git add": "allow",
+          "git add *": "allow",
+          "git commit": "allow",
+          "git commit *": "allow",
+          "git checkout": "allow",
+          "git checkout *": "allow",
+
+          // === file ops (mv restricted to dirs + .md at prompt level) ===
+          "mkdir": "allow",
+          "mkdir *": "allow",
+          "mv *": "allow",
+
+          // === hard deny ===
+          "git push": "deny",
+          "git push *": "deny",
+          "git reset --hard": "deny",
+          "git reset --hard *": "deny",
+          "git rebase": "deny",
+          "git rebase *": "deny",
+          "git tag": "deny",
+          "git tag *": "deny",
+          "git filter-branch": "deny",
+          "git filter-repo": "deny",
+          "git merge": "deny",
+          "git merge *": "deny",
+          "git stash": "deny",
+          "git stash *": "deny",
+          "git restore": "deny",
+          "git restore *": "deny",
+          "git switch": "deny",
+          "git switch *": "deny",
+
+          "rm ": "deny",
+          "rmdir": "deny",
+          "chmod": "deny",
+          "chown": "deny",
+          "sudo": "deny"
+        }
       }
     },
 
