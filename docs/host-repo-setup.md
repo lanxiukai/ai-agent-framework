@@ -120,7 +120,7 @@ opencode
 1. Tab 切到 `planner`
 2. 告诉它你的项目需求 + 项目名（slug，如 `ts-link-checker`）
 3. Planner 会在用户确认的目录下创建 `PLAN.md`
-4. PLAN 写好后**退出 session，重新 `opencode` 选 builder**（同 session Tab 切换可能不刷新 system prompt）
+4. PLAN 写好后**退出 session，重新 `opencode` 选 builder**
 5. Builder 按 task 顺序实现，每批 ≤ 3 个 → 跑测试 → 召唤 reviewer → 继续
 
 ---

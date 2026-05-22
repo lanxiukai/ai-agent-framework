@@ -185,4 +185,4 @@ MCP 工具描述（tool 名称、参数、用法）通过 MCP 协议自动注入
 
 ## 已知风险
 
-3 种已知风险与逃生通道详见 [`docs/known-risks.md`](./docs/known-risks.md)（同 session Tab 切换 / 终端 kill 不丢 session / 内置 vs 自定义 agent）。
+2 种已知风险与逃生通道详见 [`docs/known-risks.md`](./docs/known-risks.md)（终端 kill 不丢 session / 内置 vs 自定义 agent）。

@@ -205,6 +205,7 @@ git clone <本仓库地址> && cd ai-agent-framework && opencode
 
 | 版本 | 日期 | 主要变更 |
 |---|---|---|
+| v0.3.7 | 2026-05-22 | consultant_3 模型升级 Gemini 3.5 Flash；planner 新增根级 `docs/**` 写入权限 + session-log 例外；maintainer 开放 `mv` 权限；清理已解决的 Tab 切换不刷新 system prompt 风险项 |
 | v0.3.6 | 2026-05-20 | 新增 consultant_4 独立 AI 顾问 subagent（DeepSeek V4 Pro），四顾问体系完善；maintainer 编辑权限简化：移除 `projects/**` 硬 deny，项目文件写保护改为纯 prompt 层约束 |
 | v0.3.5 | 2026-05-15 | 新增三位独立 AI 顾问 subagent（consultant_1/2/3），分别使用 Claude Opus 4.7 / GPT-5.5 / Gemini 3.1 Pro Preview；maintainer 仅用户显式指令下可调用 |
 | v0.3.4 | 2026-05-13 | ASR 超时 3min→30min，全 agent `transcribe_podcast` 权限；README mcp-tools URL 修正 + 版本依赖标注 >= v0.2.1 |

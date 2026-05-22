@@ -191,4 +191,4 @@ opencode
 
 opencode 启动后，Tab 切到 `planner`，告诉它你想做什么——它会跟你确认 4 件事（语言 / 依赖管理 / 测试工具 / 环境约束），然后写出 `PLAN.md`。
 
-`PLAN.md` 写好后，**退出 session，重新 `opencode` 进入选 builder**（同 session 内 Tab 切换可能不刷新 system prompt）。builder 按 task 顺序实现，每批 ≤ 3 个 → 跑测试 → 召唤 reviewer → 处理 must-fix → 继续下一批。
+`PLAN.md` 写好后，**退出 session，重新 `opencode` 进入选 builder**。builder 按 task 顺序实现，每批 ≤ 3 个 → 跑测试 → 召唤 reviewer → 处理 must-fix → 继续下一批。
