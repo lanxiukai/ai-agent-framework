@@ -431,8 +431,9 @@
       "maxSteps": 30,
       "prompt": "{file:./agent-prompts/maintainer_flash.md}",
       // maintainer_flash is a lightweight version of maintainer — same warehouse
-      // knowledge, read-only. For Q&A, code explanation, repo navigation. Cannot
-      // modify any files or run commands. Redirects write tasks to maintainer.
+      // knowledge, nearly read-only. Can write *.md files (notes, search results
+      // collation) but only after explicit user permission (prompt-level constraint).
+      // Cannot run bash or modify non-markdown files.
       "permission": {
         "websearch": "allow",
         "webfetch": "allow",
@@ -448,7 +449,8 @@
         "describe_image": "allow",
         "vision_status": "allow",
         "edit": {
-          "*": "deny"
+          "*": "deny",
+          "*.md": "allow"
         },
         "bash": "deny"
       }

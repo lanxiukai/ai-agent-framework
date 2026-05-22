@@ -117,9 +117,9 @@ Conventional Commits：builder 用 `<type>: T0X T0Y - <概述>`，maintainer 用
 | `consultant_3` | 宿主仓库全仓库（读全库，写仅 `docs/consults/`） | 仅 `docs/consults/**` | 独立 AI 顾问（Gemini 3.5 Flash），仅 maintainer 在用户指令下调用，输出顾问报告 |
 | `consultant_4` | 宿主仓库全仓库（读全库，写仅 `docs/consults/`） | 仅 `docs/consults/**` | 独立 AI 顾问（DeepSeek V4 Pro），仅 maintainer 在用户指令下调用，输出顾问报告 |
 | `maintainer` | **框架仓库全层** | 项目文件需用户明确授权。其他路径 allow | 框架维护、修改配置/prompts、一致性审计、回答仓库设计问题 |
-| `maintainer_flash` | 全仓库（只读） | 无（只读，仅对话输出） | 轻量版 maintainer——回答仓库结构/设计问题、代码导航、解释代码。不能修改文件或跑命令 |
+| `maintainer_flash` | 全仓库（读全库，写 `*.md` 需用户许可） | `*.md`（需用户许可） | 轻量版 maintainer——回答仓库结构/设计问题、代码导航、解释代码。可写 markdown 文件（笔记、搜索结果整理），需用户明确许可 |
 
-**maintainer 是唯一跨层可写（framework + 项目）agent**。planner / builder / reviewer / teacher 严格聚焦宿主仓库的单项目。`maintainer_flash` 是全仓库只读——适用于需要框架知识但不需要修改的场景（可替代原 explainer 的职责）。`aide` 是 maintainer 的专用执行器，仅操作文档层，只能由 maintainer 通过 Task 工具调用。四位 `consultant_N` 是独立顾问 subagent，使用不同模型提供多视角分析；**仅 maintainer 可在用户显式指令下通过 Task 工具调用，maintainer 不得主动调用**。
+**maintainer 是唯一跨层可写（framework + 项目）agent**。planner / builder / reviewer / teacher 严格聚焦宿主仓库的单项目。`maintainer_flash` 可写 `*.md` 文件（笔记、搜索结果整理，需用户许可），但受限为 markdown-only——适用于需要框架知识但不需要跨层改动源码的场景。`aide` 是 maintainer 的专用执行器，仅操作文档层，只能由 maintainer 通过 Task 工具调用。四位 `consultant_N` 是独立顾问 subagent，使用不同模型提供多视角分析；**仅 maintainer 可在用户显式指令下通过 Task 工具调用，maintainer 不得主动调用**。
 
 **适合找 maintainer 的场景**：
 
@@ -147,7 +147,7 @@ Conventional Commits：builder 用 `<type>: T0X T0Y - <概述>`，maintainer 用
 
 ### 规则 1：写入权限仅限 maintainer
 
-除 maintainer 外，**任何 agent**（planner / builder / reviewer / teacher / maintainer_flash / aide）均不得 edit 或 write 以上任一文件。此规则在 `opencode.jsonc` 的 permission 层硬封，并由各 agent prompt 明文重申。
+除 maintainer 外，**任何 agent**（planner / builder / reviewer / teacher / maintainer_flash / aide）均不得 edit 或 write 以上任一文件（`maintainer_flash` 虽有 `*.md` 写权限，但 AGENTS.md 的修改须由 maintainer 统一处理）。此规则在 `opencode.jsonc` 的 permission 层硬封（除 AGENTS.md 外），并由各 agent prompt 明文重申。
 
 ### 规则 2：改一侧立即同步另一侧
 
