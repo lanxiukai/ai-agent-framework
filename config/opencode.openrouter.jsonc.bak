@@ -132,7 +132,8 @@
         "edit": {
           "*": "deny",
           "**/PLAN.md": "allow",
-          "**/docs/**": "allow"
+          "**/docs/**": "allow",
+          "docs/**": "allow"
         }
       }
     },
