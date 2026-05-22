@@ -47,6 +47,12 @@
       "command": ["<YOUR-CONDA-ENV-PYTHON>", "<YOUR-MCP-SCRIPTS-DIR>/vl/vision_mcp_server.py"],
       "enabled": true,
       "timeout": 15000
+    },
+    "format_conversion": {
+      "type": "local",
+      "command": ["<YOUR-CONDA-ENV-PYTHON>", "<YOUR-MCP-SCRIPTS-DIR>/format-conversion/format_mcp_server.py"],
+      "enabled": true,
+      "timeout": 60000
     }
   },
 
