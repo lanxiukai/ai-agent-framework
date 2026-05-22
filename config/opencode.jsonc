@@ -143,8 +143,9 @@
     "builder": {
       "mode": "primary",
       "model": "deepseek/deepseek-v4-pro",
+      "temperature": 0.2,
       "maxTokens": 98304,
-      "maxSteps": 120,
+      "maxSteps": 160,
       "reasoning_effort": "max",
       "prompt": "{file:./agent-prompts/builder.md}",
       // builder works within the user-confirmed project directory (anywhere in repo).
@@ -176,8 +177,8 @@
       "mode": "subagent",
       "model": "deepseek/deepseek-v4-pro",
       "temperature": 0,
-      "maxTokens": 65536,
-      "maxSteps": 20,
+      "maxTokens": 98304,
+      "maxSteps": 40,
       "reasoning_effort": "max",
       "prompt": "{file:./agent-prompts/reviewer.md}",
       // reviewer only writes REVIEW.md at the project directory (path received from builder).
@@ -283,7 +284,7 @@
       "mode": "subagent",
       "model": "deepseek/deepseek-v4-flash",
       "temperature": 0.1,
-      "maxTokens": 196608,
+      "maxTokens": 65536,
       "maxSteps": 15,
       "reasoning_effort": "max",
       "prompt": "{file:./agent-prompts/aide.md}",
