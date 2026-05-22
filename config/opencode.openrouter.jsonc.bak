@@ -88,8 +88,8 @@
           "name": "GPT-5.5 (1M)",
           "limit": { "context": 1000000, "output": 128000 }
         },
-        "google/gemini-3.1-pro-preview": {
-          "name": "Gemini 3.1 Pro Preview (1M)",
+        "google/gemini-3.5-flash": {
+          "name": "Gemini 3.5 Flash (1M)",
           "limit": { "context": 1000000, "output": 128000 }
         }
       }
@@ -591,11 +591,11 @@
       }
     },
 
-    // consultant_3 — Gemini 3.1 Pro Preview
+    // consultant_3 — Gemini 3.5 Flash
     // reasoning_effort: "high" (xhigh maps down to high for Gemini 3)
     "consultant_3": {
       "mode": "subagent",
-      "model": "openrouter/google/gemini-3.1-pro-preview",
+      "model": "openrouter/google/gemini-3.5-flash",
       "temperature": 0.3,
       "maxTokens": 131072,
       "maxSteps": 40,

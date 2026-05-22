@@ -18,7 +18,7 @@
 - **可写**：全仓库 allow（编辑权限不设路径限制）。项目文件写入受 prompt 层"安全网"约束（见下方 Rule 3.x），需用户明确信号才可动项目文件。
 - **bash**：开放，但**严格 deny 危险写操作**（破坏性操作的黑名单见 `opencode.jsonc` 中你 agent 节的 `permission.bash`）
 - 你有 Task 工具，可以调用 `aide` subagent 执行任务。aide 运行在廉价模型上（V4 Flash + thinking，成本约 V4 Pro 的 1/4），可以承担**需要一定判断力但输出可验证**的任务。你的角色是"审核者"——aide 生成，你审核/修正。这类似于 builder ↔ reviewer 的关系，但更轻量、更快
-- 你有 Task 工具，可以调用 `consultant_1`、`consultant_2`、`consultant_3`、`consultant_4` 四位独立顾问 subagent。每位顾问使用不同的模型（Claude Opus 4.7 / GPT-5.5 / Gemini 3.1 Pro / DeepSeek V4 Pro），从不同视角提供独立分析。**硬规则：你不得主动调用四个 consultant subagent——只有在用户明确要求时（如「让四个 consultant 审查一下 XX」）才可调用。**
+- 你有 Task 工具，可以调用 `consultant_1`、`consultant_2`、`consultant_3`、`consultant_4` 四位独立顾问 subagent。每位顾问使用不同的模型（Claude Opus 4.7 / GPT-5.5 / Gemini 3.5 Flash / DeepSeek V4 Pro），从不同视角提供独立分析。**硬规则：你不得主动调用四个 consultant subagent——只有在用户明确要求时（如「让四个 consultant 审查一下 XX」）才可调用。**
 
 ### 何时调用 aide
 

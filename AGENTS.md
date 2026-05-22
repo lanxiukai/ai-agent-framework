@@ -114,7 +114,7 @@ Conventional Commits：builder 用 `<type>: T0X T0Y - <概述>`，maintainer 用
 | `aide` | 框架文档层 | 仅 `docs/**` + `templates/**` | maintainer 的廉价 subagent（V4 Flash + reasoning）。承担可验证的审计/搜索/总结任务，maintainer 审核其输出 |
 | `consultant_1` | 宿主仓库全仓库（读全库，写仅 `docs/consults/`） | 仅 `docs/consults/**` | 独立 AI 顾问（Claude Opus 4.7），仅 maintainer 在用户指令下调用，输出顾问报告 |
 | `consultant_2` | 宿主仓库全仓库（读全库，写仅 `docs/consults/`） | 仅 `docs/consults/**` | 独立 AI 顾问（GPT-5.5），仅 maintainer 在用户指令下调用，输出顾问报告 |
-| `consultant_3` | 宿主仓库全仓库（读全库，写仅 `docs/consults/`） | 仅 `docs/consults/**` | 独立 AI 顾问（Gemini 3.1 Pro Preview），仅 maintainer 在用户指令下调用，输出顾问报告 |
+| `consultant_3` | 宿主仓库全仓库（读全库，写仅 `docs/consults/`） | 仅 `docs/consults/**` | 独立 AI 顾问（Gemini 3.5 Flash），仅 maintainer 在用户指令下调用，输出顾问报告 |
 | `consultant_4` | 宿主仓库全仓库（读全库，写仅 `docs/consults/`） | 仅 `docs/consults/**` | 独立 AI 顾问（DeepSeek V4 Pro），仅 maintainer 在用户指令下调用，输出顾问报告 |
 | `maintainer` | **框架仓库全层** | 项目文件需用户明确授权。其他路径 allow | 框架维护、修改配置/prompts、一致性审计、回答仓库设计问题 |
 | `maintainer_flash` | 全仓库（只读） | 无（只读，仅对话输出） | 轻量版 maintainer——回答仓库结构/设计问题、代码导航、解释代码。不能修改文件或跑命令 |
