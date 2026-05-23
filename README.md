@@ -205,6 +205,7 @@ git clone <本仓库地址> && cd ai-agent-framework && opencode
 
 | 版本 | 日期 | 主要变更 |
 |---|---|---|
+| v0.3.8 | 2026-05-23 | AGENTS.md 新增 PDF 处理优先级规则（先 `pdf_to_text` 毫秒级提取，文本为空再 `ocr_glm` VLM OCR）；opencode.jsonc glm_ocr timeout 180s→1800s 适配大 PDF 异步 OCR；config 同步用户级 |
 | v0.3.7 | 2026-05-22 | consultant_3 模型升级 Gemini 3.5 Flash；planner 新增根级 `docs/**` 写入权限 + session-log 例外；maintainer 开放 `mv` 权限；清理已解决的 Tab 切换不刷新 system prompt 风险项 |
 | v0.3.6 | 2026-05-20 | 新增 consultant_4 独立 AI 顾问 subagent（DeepSeek V4 Pro），四顾问体系完善；maintainer 编辑权限简化：移除 `projects/**` 硬 deny，项目文件写保护改为纯 prompt 层约束 |
 | v0.3.5 | 2026-05-15 | 新增三位独立 AI 顾问 subagent（consultant_1/2/3），分别使用 Claude Opus 4.7 / GPT-5.5 / Gemini 3.1 Pro Preview；maintainer 仅用户显式指令下可调用 |

@@ -34,13 +34,13 @@
       "type": "local",
       "command": ["<YOUR-CONDA-ENV-PYTHON>", "<YOUR-MCP-SCRIPTS-DIR>/asr/asr_mcp_server.py"],
       "enabled": true,
-      "timeout": 1800000
+      "timeout": 18000000
     },
     "glm_ocr": {
       "type": "local",
       "command": ["<YOUR-CONDA-ENV-PYTHON>", "<YOUR-MCP-SCRIPTS-DIR>/ocr/glm_ocr_mcp_server.py"],
       "enabled": true,
-      "timeout": 180000
+      "timeout": 1800000
     },
     "qwen_vision": {
       "type": "local",
