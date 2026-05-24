@@ -107,6 +107,10 @@
     "build": { "disable": true },
     "plan": { "disable": true },
 
+    // Disable built-in subagents — functionality absorbed into custom aide.
+    "explore": { "disable": true },
+    "general": { "disable": true },
+
     "planner": {
       "mode": "primary",
       "model": "openrouter/anthropic/claude-opus-4.7",
@@ -289,21 +293,21 @@
       "model": "deepseek/deepseek-v4-flash",
       "temperature": 0.1,
       "maxTokens": 65536,
-      "maxSteps": 15,
+      "maxSteps": 25,
       "reasoning_effort": "max",
       "prompt": "{file:./agent-prompts/aide.md}",
-      // aide is a subagent — maintainer invokes it for simple, repetitive,
-      // mechanical tasks (search, batch replace, statistics). Not for project
-      // code generation, prompt/config modification, or design decisions.
-      // read/glob/grep allowed for search & audit tasks; external_directory
-      // enables reading ~/.config/opencode and other framework related paths
-      // outside the workspace (e.g. user-level config audit).
+      // aide — maintainer's subagent executor (absorbs disabled built-in explore + general).
+      // Capabilities: codebase exploration (glob/grep/read), web research (websearch/webfetch),
+      // multi-step tasks, batch editing (markdown/docs/templates only), audit/statistics.
+      // Not for project code generation, prompt/config modification, or design decisions.
       // edit limited to *.md + docs/** + templates/**; agent-prompts/** + opencode.jsonc deny.
       // bash restricted to read-only commands (write ops denied at config layer).
       "permission": {
         "read": "allow",
         "glob": "allow",
         "grep": "allow",
+        "websearch": "allow",
+        "webfetch": "allow",
         "external_directory": "allow",
         "transcribe_audio": "allow",
         "transcribe_podcast": "allow",

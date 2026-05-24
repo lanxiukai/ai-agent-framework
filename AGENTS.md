@@ -111,7 +111,7 @@ Conventional Commits：builder 用 `<type>: T0X T0Y - <概述>`，maintainer 用
 | `builder` | 宿主仓库单项目 | 项目源码 / 测试 / `PROGRESS.md` | 实现、测试、commit、召唤 reviewer |
 | `reviewer` | 宿主仓库单项目 | 仅 `<项目目录>/REVIEW.md` | 独立验证测试 / lint / 类型检查；输出 APPROVED/NEEDS-FIX/REJECTED |
 | `teacher` | 宿主仓库单项目 | `<项目目录>/learning-notes/**` | 项目交付后由 builder 调用，生成学习材料 |
-| `aide` | 框架文档层 | 仅 `docs/**` + `templates/**` | maintainer 的廉价 subagent（V4 Flash + reasoning）。承担可验证的审计/搜索/总结任务，maintainer 审核其输出 |
+| `aide` | 框架文档层 | 仅 `docs/**` + `templates/**` | maintainer 的廉价 subagent（V4 Flash + reasoning）。吸收内置 explore（代码库探索）+ general（网络研究/多步骤）功能。承担可验证的审计/搜索/总结/研究任务，maintainer 审核其输出 |
 | `consultant_1` | 宿主仓库全仓库（读全库，写仅 `docs/consults/`） | 仅 `docs/consults/**` | 独立 AI 顾问（Claude Opus 4.7），仅 maintainer 在用户指令下调用，输出顾问报告 |
 | `consultant_2` | 宿主仓库全仓库（读全库，写仅 `docs/consults/`） | 仅 `docs/consults/**` | 独立 AI 顾问（GPT-5.5），仅 maintainer 在用户指令下调用，输出顾问报告 |
 | `consultant_3` | 宿主仓库全仓库（读全库，写仅 `docs/consults/`） | 仅 `docs/consults/**` | 独立 AI 顾问（Gemini 3.5 Flash），仅 maintainer 在用户指令下调用，输出顾问报告 |
