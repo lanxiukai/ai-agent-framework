@@ -11,42 +11,42 @@
 - **用户级配置**：将配置安装到 `~/.config/opencode/`，所有项目自动共享，零配置启动
 - **Git Submodule**：嵌入到业务仓库（宿主仓库），适合需要版本锁定的团队协作
 
-核心流程是 `planner` → `builder` → `reviewer` 三角协作：
+**`maintainer` 是所有项目工作的唯一入口**。你只需告诉 maintainer 想做什么，它会调度 4 个专业 subagent 完成整个 project 生命周期：
 
 ```
-                  ┌──────────────┐
-   你（用户） ──→  │   planner    │  写 PLAN.md（项目契约）
-                  │  (primary)   │  ← 不写代码、不跑命令
-                  └──────┬───────┘
-                         │ Tab 切换
-                         ↓
-                  ┌──────────────┐
-                  │   builder    │  按 PLAN 实现 task，写 PROGRESS.md
-                  │  (primary)   │  → 每批结束召唤 reviewer
-                  └──────┬───────┘
-                         │ Task tool 调用
-                         ↓
-                  ┌──────────────┐
-                  │   reviewer   │  独立验证，写 REVIEW.md
-                  │  (subagent)  │  → APPROVED / NEEDS-FIX / REJECTED
-                  └──────────────┘
+                         ┌──────────────┐
+                         │  maintainer  │  调度者 + 维护者
+    你（用户） ────────→  │  (primary)   │  唯一入口
+                         └──┬──┬──┬──┬──┘
+                            │  │  │  │  Task tool 调用
+              ┌─────────────┘  │  │  └─────────────┐
+              ↓                ↓  ↓                ↓
+    ┌──────────────┐  ┌──────────────┐  ┌──────────────┐
+    │   planner    │  │   builder    │  │   reviewer   │
+    │  (subagent)  │  │  (subagent)  │  │  (subagent)  │
+    │  写 PLAN.md  │  │  落码+测试   │  │  独立验证    │
+    └──────────────┘  └──────────────┘  └──────────────┘
+                              ↓
+                      ┌──────────────┐
+                      │   teacher    │  按需调用
+                      │  (subagent)  │  写 learning-notes/
+                      └──────────────┘
 ```
 
-辅助 agent（按需调用）：
+辅助 agent：
 
-- **`teacher`**（subagent）：项目交付后自动生成学习材料到 `<项目目录>/learning-notes/`
-- **`maintainer`**（primary）：框架维护——修改配置与 prompts、一致性审计
-- **`maintainer_flash`**（primary）：轻量只读版 maintainer——回答仓库结构/设计问题、代码导航、解释代码
-- **`aide`**（subagent）：maintainer 的廉价执行器（V4 Flash + reasoning），承担可验证的审计/搜索/总结任务
+- **`maintainer_flash`**（primary）：轻量版 maintainer——回答仓库结构/设计问题、代码导航、写笔记
+- **`aide`**（subagent）：maintainer 的廉价执行器（V4 Flash），承担可验证的审计/搜索/总结/批量编辑
+- **`consultant_1-4`**（subagent）：4 位独立 AI 顾问（Claude Opus 4.7 / GPT-5.5 / Gemini 3.5 Flash / DeepSeek V4 Pro），用户指令下提供多视角分析
 
 | 文件 | 由谁写 | 谁来读 | 作用 |
 |---|---|---|---|
 | `<项目目录>/PLAN.md` | planner | builder, reviewer, teacher | 项目契约（需求 / 技术选型 / task / 验收标准） |
-| `<项目目录>/PROGRESS.md` | builder | planner（回退）, teacher | 增量工作日志（done / blocked / plan-issue） |
-| `<项目目录>/REVIEW.md` | reviewer | builder, teacher | 当批次的审查结论（每轮覆盖写入） |
-| `<项目目录>/learning-notes/**` | teacher | 学习者 | 学习材料（按需生成） |
+| `<项目目录>/PROGRESS.md` | builder | maintainer, teacher | 增量工作日志（done / blocked / plan-issue） |
+| `<项目目录>/REVIEW.md` | reviewer | maintainer, builder, teacher | 当批次的审查结论（每轮覆盖写入） |
+| `<项目目录>/learning-notes/**` | teacher | 学习者 | 学习材料（maintainer 按需调用） |
 
-完整 agent prompt：`agent-prompts/{planner,builder,reviewer,teacher,maintainer,maintainer_flash,aide}.md`
+完整 agent prompt：`agent-prompts/{planner,builder,reviewer,teacher,maintainer,maintainer_flash,aide,consultant_1-4}.md`
 
 ---
 
@@ -160,12 +160,13 @@ git clone <本仓库地址> && cd ai-agent-framework && opencode
 - 改仓库级开发约定 → 编辑 `AGENTS.md`
 - 框架更新后用户级配置如何生效 → 见 [`docs/quickstart.md#框架更新`](./docs/quickstart.md#框架更新)
 
-> 懒人方案：召唤 `maintainer` agent 来做——它有全仓库权限。maintainer 会在改 prompts 前口述意图并等你确认。
+> 懒人方案：召唤 `maintainer` agent 来做——它既是所有项目工作的统一入口（调度 planner/builder/reviewer/teacher），也有全仓库权限做框架维护。maintainer 会在改 prompts 前口述意图并等你确认。
 
 ---
 
 ## 设计原则
 
+- **maintainer 是所有项目工作的唯一入口**：planner / builder / reviewer / teacher 都是 maintainer 的 subagent——用户只需面对 maintainer，无需切换 agent
 - **planner 不写代码、不跑命令**：只写 PLAN.md。代码层面的细节属于 builder
 - **环境契约写在 PLAN.md 第 0 节**：框架不绑定任何语言，技术栈按项目决定
 - **reviewer 独立验证**：必须自行重跑测试 / 类型检查 / lint——不信任 builder 的输出
