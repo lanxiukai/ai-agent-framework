@@ -1,7 +1,8 @@
 {
   "$schema": "https://opencode.ai/config.json",
   // ====================================================================
-  // Source template: all agents use DeepSeek (V4 Pro for primary, V4 Flash for aide + maintainer_flash + teacher).
+  // Source template: V4 Pro for maintainer + project subagents (planner/builder/reviewer),
+  // V4 Flash for aide + maintainer_flash + teacher.
   // This file lives in config/ — it is NOT loaded as a project override by opencode.
   // To activate: copy to ~/.config/opencode/opencode.jsonc (replacing prompt paths with absolute paths).
   //
