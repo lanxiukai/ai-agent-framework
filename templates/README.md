@@ -13,7 +13,7 @@
 | `gitignore-python.txt` | Python 项目通用忽略片段（pycache / dist / venv / 类型检查器缓存等） | `cat templates/gitignore-python.txt >> .gitignore` |
 | `gitignore-node.txt` | Node / TypeScript 项目通用忽略片段（node_modules / dist / tsbuildinfo 等） | `cat templates/gitignore-node.txt >> .gitignore` |
 | `gitignore-rust.txt` | Rust / Cargo 项目通用忽略片段（target/ / rustc_info.json 等） | `cat templates/gitignore-rust.txt >> .gitignore` |
-| `user-prompts/` | 用户 → agent 提示词模板（builder / planner / maintainer） | 直接阅读对应 `.md` 文件，复制模板填入具体需求 |
+| `developer-environment.template.md` | 硬件环境档案模板（OS / CPU / RAM / GPU） | `cp templates/developer-environment.template.md docs/developer-environment.md`，填入本机信息 |
 | `project-ideas/` | 项目 idea 模板与学习路线图（TEMPLATE.md / 00-ROADMAP.md） | 按 TEMPLATE.md 填写新项目 prompt，续号放入此目录 |
 
 ## 未来计划收录

@@ -38,7 +38,7 @@
 - 仓库级约定：`<FRAMEWORK_PATH>/AGENTS.md`
 - 工程法则：`<FRAMEWORK_PATH>/docs/agent-rules.md`
 - Agent prompts：`<FRAMEWORK_PATH>/agent-prompts/`
-- 硬件环境：`<FRAMEWORK_PATH>/docs/developer-environment.md`（首次使用需从 `<FRAMEWORK_PATH>/docs/developer-environment.template.md` 复制并填入本机信息）
+- 硬件环境：`<FRAMEWORK_PATH>/docs/developer-environment.md`（首次使用需从 `<FRAMEWORK_PATH>/templates/developer-environment.template.md` 复制并填入本机信息）
 
 ## 工作流
 

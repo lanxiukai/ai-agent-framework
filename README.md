@@ -77,7 +77,6 @@
 │   ├── quickstart.md                 # 快速开始详细指南（3 种方式 + 配置叠加示例）
 │   ├── known-risks.md                # 已知风险与逃生通道
 │   ├── developer-environment.md     # 硬件环境档案
-│   ├── developer-environment.template.md  # 硬件环境模板
 │   ├── host-repo-setup.md           # Submodule 宿主仓库初始化指南
 │   ├── private/                     # 个人文件（不被 git 跟踪）
 │   └── .session-log.md              # 框架 session 操作日志
@@ -86,7 +85,7 @@
 │   ├── .session-log.md              # 宿主仓库 session 日志模板
 │   ├── AGENTS.md / PROGRESS.md / REVIEW.md   # 工作产物模板
 │   ├── project-ideas/                # 项目 idea 池
-│   ├── user-prompts/                 # 用户 → agent 提示词模板
+│   ├── developer-environment.template.md  # 硬件环境模板
 │   └── gitignore-python.txt / gitignore-node.txt / gitignore-rust.txt
 └── .editorconfig / .gitattributes / .gitignore
 ```

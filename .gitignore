@@ -67,6 +67,6 @@ docs/.session-log.md
 # ============================================================
 # Personal files (hardware config, issue drafts, etc.)
 # Clone the template and fill in your own info:
-#   cp docs/developer-environment.template.md docs/developer-environment.md
+#   cp templates/developer-environment.template.md docs/developer-environment.md
 docs/developer-environment.md
 docs/private/

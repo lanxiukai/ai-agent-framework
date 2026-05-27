@@ -9,7 +9,7 @@ AI agent 协作框架源模板。所有 agent（planner / builder / reviewer / t
 - builder 和 reviewer **必须**在启动时读该项目的 `PLAN.md` 第 0 节，严格遵循其中定义的命令调用规则
 - 项目级命令（pytest / mypy / ruff / pip / cargo / pnpm 等）应在该项目目录下执行
 - 如果 `<项目目录>/PLAN.md` 不存在或第 0 节为空，**所有 bash / 包安装命令必须暂停**——planner 必须先和用户澄清技术栈
-- **硬件环境**：开发者本地硬件信息（OS / CPU / RAM / GPU）见 [`docs/developer-environment.md`](./docs/developer-environment.md)（首次使用：`cp docs/developer-environment.template.md docs/developer-environment.md` 并填入你的硬件信息）。planner 在起草 PLAN.md 第 0 节时必须先读此文件，确保 task 对 GPU 显存 / 内存的需求不超出可用硬件；如项目需要更高算力，PLAN 中应注明"需租用云 GPU"及推荐配置
+- **硬件环境**：开发者本地硬件信息（OS / CPU / RAM / GPU）见 [`docs/developer-environment.md`](./docs/developer-environment.md)（首次使用：`cp templates/developer-environment.template.md docs/developer-environment.md` 并填入你的硬件信息）。planner 在起草 PLAN.md 第 0 节时必须先读此文件，确保 task 对 GPU 显存 / 内存的需求不超出可用硬件；如项目需要更高算力，PLAN 中应注明"需租用云 GPU"及推荐配置
 > 本机 conda 环境清单、OS/CPU/GPU/CUDA/磁盘等硬件信息集中记录在各项目的
 > `docs/conda-environments.md` 中。
 > planner 在起草 PLAN.md 第 0 节时应先读该文件，避免假设错误的环境配置。
