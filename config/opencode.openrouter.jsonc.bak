@@ -103,7 +103,7 @@
   },
 
   "agent": {
-    // Disable built-in primary agents — use custom planner/builder instead.
+    // Disable built-in primary agents — planner / builder are custom subagents called by maintainer.
     "build": { "disable": true },
     "plan": { "disable": true },
 
@@ -112,14 +112,15 @@
     "general": { "disable": true },
 
     "planner": {
-      "mode": "primary",
+      "mode": "subagent",
       "model": "openrouter/anthropic/claude-opus-4.7",
       "temperature": 1,
       "maxTokens": 131072,
       "maxSteps": 40,
       "reasoning_effort": "max",
       "prompt": "{file:./agent-prompts/planner.md}",
-      // planner writes PLAN.md + docs/** at user-confirmed project path (anywhere in repo).
+      // planner is a subagent — maintainer invokes it via Task tool to draft/revise PLAN.md.
+      // Writes PLAN.md + docs/** at user-confirmed project path (anywhere in repo).
       // Note: opencode's edit permission covers all write operations (edit/write/patch/multiedit);
       // use path-based allowlist for these targets, deny everything else.
       // bash fully disabled (planner should never run commands).
@@ -149,15 +150,17 @@
     },
 
     "builder": {
-      "mode": "primary",
+      "mode": "subagent",
       "model": "deepseek/deepseek-v4-pro",
       "temperature": 0.2,
       "maxTokens": 98304,
-      "maxSteps": 160,
+      "maxSteps": 60,
       "reasoning_effort": "max",
       "prompt": "{file:./agent-prompts/builder.md}",
-      // builder works within the user-confirmed project directory (anywhere in repo).
+      // builder is a subagent — maintainer invokes it via Task tool to implement tasks.
+      // Works within the user-confirmed project directory (anywhere in repo).
       // Prompt layer strictly constrains builder to only modify files under that directory.
+      // Does NOT call reviewer/teacher — those are scheduled by maintainer.
       // Dangerous commands / cross-project constraints enforced at prompt layer (builder.md).
       // last-matching-rule-wins, so catch-all "*": "deny" must come first.
       "permission": {
@@ -189,7 +192,8 @@
       "maxSteps": 40,
       "reasoning_effort": "max",
       "prompt": "{file:./agent-prompts/reviewer.md}",
-      // reviewer only writes REVIEW.md at the project directory (path received from builder).
+      // reviewer is a subagent — maintainer invokes it via Task tool to independently verify builder's output.
+      // Only writes REVIEW.md at the project directory (path received from maintainer).
       // Source code / PLAN.md strictly off-limits.
       // bash limited to read-only / verification commands; dangerous write ops hardened at config layer.
       // Note: opencode permission is "last-matching-rule-wins", so catch-all rules
@@ -263,8 +267,8 @@
       "maxSteps": 30,
       "reasoning_effort": "max",
       "prompt": "{file:./agent-prompts/teacher.md}",
-      // teacher is a subagent — builder invokes it after project delivery to generate learning materials.
-      // edit limited to learning-notes/ subdirectory at the project path (received from builder).
+      // teacher is a subagent — maintainer invokes it (on user request) to generate learning materials.
+      // edit limited to learning-notes/ subdirectory at the project path (received from maintainer).
       // bash disabled.
       "permission": {
         "websearch": "allow",

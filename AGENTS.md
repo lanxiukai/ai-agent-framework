@@ -18,7 +18,7 @@ AI agent 协作框架源模板。所有 agent（planner / builder / reviewer / t
 
 ### 模式 A：纯用户默认（大多数项目）
 
-项目根**没有** `opencode.jsonc`。7 个 agent 直接从用户级配置（`~/.config/opencode/opencode.jsonc`）加载，零设置。
+项目根**没有** `opencode.jsonc`。2 个 primary agent（maintainer、maintainer_flash）加所有 subagent（planner/builder/reviewer/teacher/aide/consultants）直接从用户级配置（`~/.config/opencode/opencode.jsonc`）加载，零设置。
 
 ### 模式 B：项目覆盖（个别项目特殊需求）
 
@@ -37,13 +37,16 @@ AI agent 协作框架源模板。所有 agent（planner / builder / reviewer / t
 
 ## 工作流
 
-新项目的标准流程：
+所有项目工作通过 `maintainer`（primary agent）统一入口。新项目的标准流程：
 
-1. **起项目**：用户在宿主仓库中告诉 planner 项目需求 + 项目名（slug，推荐小写字母 + 连字符，如 `ts-link-checker`、`llm-gateway`）
-2. **写计划**：Planner 在用户确认的项目目录下创建 `PLAN.md`（第 0 节为环境契约）
-3. **实现 task**：Builder 切换到项目目录（`cd <项目目录>` 或命令加路径前缀），按 PLAN 顺序实现，每批 ≤ 3 个 → 跑测试 → 召唤 reviewer
-4. **审查**：Reviewer 独立验证测试 / lint / 类型检查，输出 APPROVED / NEEDS-FIX / REJECTED；`REVIEW.md` 写到 `<项目目录>/REVIEW.md`
-5. **交付**：项目交付后，builder 自动调用 teacher 子 agent 生成学习材料（写到`<项目目录>/learning-notes/`）
+1. **起项目**：用户告诉 maintainer 项目需求 + 项目名（slug，推荐小写字母 + 连字符，如 `ts-link-checker`、`llm-gateway`）
+2. **写计划**：maintainer 调 `@planner` subagent，在用户确认的项目目录下创建 `PLAN.md`（第 0 节为环境契约）。maintainer 将 PLAN 转达用户确认
+3. **实现 task**：maintainer 逐批调 `@builder` subagent 按 PLAN 顺序实现（每批 ≤ 3 个 task）。builder 完成后 commit 并返回结果
+4. **审查**：maintainer 调 `@reviewer` subagent 独立验证 builder 的产出（测试 / lint / 类型检查），输出 APPROVED / NEEDS-FIX / REJECTED 到 `<项目目录>/REVIEW.md`
+5. **复审循环**：NEEDS-FIX → maintainer 将 must-fix 列表传给 builder 修复 → reviewer 复审。APPROVED → 下一批 task。REJECTED → maintainer 视情况调 planner 修订或请求用户介入
+6. **交付**：所有 task 完成 + 最终 APPROVED 后，maintainer 交付项目。用户可选调 `@teacher` subagent 生成学习材料（写到 `<项目目录>/learning-notes/`）
+
+> maintainer 是唯一入口。用户不再直接面对 planner / builder / reviewer / teacher——提需求给 maintainer 即可。
 
 ## 多项目共存
 
@@ -107,10 +110,10 @@ Conventional Commits：builder 用 `<type>: T0X T0Y - <概述>`，maintainer 用
 
 | Agent | 作用域 | 写权限 | 典型用途 |
 |---|---|---|---|
-| `planner` | 宿主仓库单项目 | `<项目目录>/PLAN.md` + `<项目目录>/docs/**` | 起草项目计划，修订 PLAN |
-| `builder` | 宿主仓库单项目 | 项目源码 / 测试 / `PROGRESS.md` | 实现、测试、commit、召唤 reviewer |
-| `reviewer` | 宿主仓库单项目 | 仅 `<项目目录>/REVIEW.md` | 独立验证测试 / lint / 类型检查；输出 APPROVED/NEEDS-FIX/REJECTED |
-| `teacher` | 宿主仓库单项目 | `<项目目录>/learning-notes/**` | 项目交付后由 builder 调用，生成学习材料 |
+| `planner` | 宿主仓库单项目（由 maintainer 通过 Task 调用） | `<项目目录>/PLAN.md` + `<项目目录>/docs/**` | 起草项目计划，修订 PLAN |
+| `builder` | 宿主仓库单项目（由 maintainer 通过 Task 调用） | 项目源码 / 测试 / `PROGRESS.md` | 实现、测试、commit；完成后退回 maintainer |
+| `reviewer` | 宿主仓库单项目（由 maintainer 通过 Task 调用） | 仅 `<项目目录>/REVIEW.md` | 独立验证测试 / lint / 类型检查；输出 APPROVED/NEEDS-FIX/REJECTED |
+| `teacher` | 宿主仓库单项目（由 maintainer 通过 Task 调用） | `<项目目录>/learning-notes/**` | maintainer 在用户要求时调用，生成学习材料 |
 | `aide` | 框架文档层 | 仅 `docs/**` + `templates/**` | maintainer 的廉价 subagent（V4 Flash + reasoning）。吸收内置 explore（代码库探索）+ general（网络研究/多步骤）功能。承担可验证的审计/搜索/总结/研究任务，maintainer 审核其输出 |
 | `consultant_1` | 宿主仓库全仓库（读全库，写仅 `docs/consults/`） | 仅 `docs/consults/**` | 独立 AI 顾问（Claude Opus 4.7），仅 maintainer 在用户指令下调用，输出顾问报告 |
 | `consultant_2` | 宿主仓库全仓库（读全库，写仅 `docs/consults/`） | 仅 `docs/consults/**` | 独立 AI 顾问（GPT-5.5），仅 maintainer 在用户指令下调用，输出顾问报告 |
@@ -119,21 +122,21 @@ Conventional Commits：builder 用 `<type>: T0X T0Y - <概述>`，maintainer 用
 | `maintainer` | **框架仓库全层** | 项目文件需用户明确授权。其他路径 allow | 框架维护、修改配置/prompts、一致性审计、回答仓库设计问题 |
 | `maintainer_flash` | 全仓库（读全库，写 `*.md` 需用户许可，排除框架文件） | `*.md`（排除框架：`agent-prompts/`、`docs/`、`templates/`、`AGENTS.md`、`README.md` + `~/.config/opencode/`）；git add/commit/checkout（仅 dev，commit 需用户指令）；mkdir；mv（仅限 .md + 目录） | 轻量版 maintainer——回答仓库结构/设计问题、代码导航、解释代码。可写 markdown 文件（笔记、搜索结果整理），需用户明确许可。可调用 aide（主动）/ consultant_3,4（用户指令） | |
 
-**maintainer 是唯一跨层可写（framework + 项目）agent**。planner / builder / reviewer / teacher 严格聚焦宿主仓库的单项目。`maintainer_flash` 可写 `*.md` 文件（笔记、搜索结果整理，需用户许可，排除框架文件），可主动调用 `aide`、用户指令下调用 `consultant_3`/`consultant_4`，可 `git commit`（仅 dev，需用户指令）、`mkdir` / `mv`（.md+目录）——适用于需要框架知识但不需跨层改动源码的场景。`aide` 是 maintainer 的专用执行器，仅操作文档层，只能由 maintainer 通过 Task 工具调用。四位 `consultant_N` 是独立顾问 subagent，使用不同模型提供多视角分析；**仅 maintainer 可在用户显式指令下通过 Task 工具调用，maintainer 不得主动调用**。
+**maintainer 是所有项目工作的唯一入口**。planner / builder / reviewer / teacher 都是 maintainer 的 subagent。`maintainer_flash` 可写 `*.md` 文件（笔记、搜索结果整理，需用户许可，排除框架文件），可主动调用 `aide`、用户指令下调用 `consultant_3`/`consultant_4`，可 `git commit`（仅 dev，需用户指令）、`mkdir` / `mv`（.md+目录）——适用于需要框架知识但不需跨层改动源码的场景。`aide` 是 maintainer 的专用执行器，仅操作文档层，只能由 maintainer 通过 Task 工具调用。四位 `consultant_N` 是独立顾问 subagent，使用不同模型提供多视角分析；**仅 maintainer 可在用户显式指令下通过 Task 工具调用，maintainer 不得主动调用**。
 
 **适合找 maintainer 的场景**：
 
+- 启动新项目（maintainer 会调度 planner → builder → reviewer 完成）
 - 修改 framework 自身（prompts、配置、文档）
 - 回答仓库结构、设计相关问题
-- 处理"非标准"需求（不属于 plan / build / review / teach 流程）
+- 处理"非标准"需求（不属于标准 plan / build / review / teach 流程）
 - 调用独立顾问（consultant_1/2/3/4）进行多视角分析（需用户显式指令）
 
-**不应该找 maintainer 的场景**（用专门 agent）：
-
-- 起草新项目 PLAN → `planner`
-- 实现具体 task → `builder`
-- 审查 task 完成情况 → `reviewer`
-- 讲解项目设计思路 → `teacher`
+**不应该找 maintainer 的场景**（用专门 subagent）：
+- 起草新项目 PLAN → maintainer 会调 `planner`（用户只需告诉 maintainer 需求）
+- 实现具体 task → maintainer 会调 `builder`（用户只需告诉 maintainer "实现 T03"）
+- 审查 task 完成情况 → maintainer 会调 `reviewer`
+- 讲解项目设计思路 → maintainer 会调 `teacher`（用户说"生成学习笔记"）
 
 ## 同步约定（硬性规则）
 

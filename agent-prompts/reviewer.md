@@ -24,8 +24,8 @@
 - 如果发现 builder 在 `PROGRESS.md` 或对话里使用了违反 PLAN 第 0 节"禁止事项"的命令（例如裸 `pip install`、`--break-system-packages`、跨过指定工具链调用全局命令、在错误的环境/工具链中执行等），**这本身就是一条 must-fix**（违反环境契约）
 
 ## 输入契约
-- **项目目录**：本仓库支持多项目共存。builder 召唤时**会在 prompt 里告诉你具体项目目录**（如 `<slug>/`）；该目录下的 `PLAN.md` / `PROGRESS.md` / `REVIEW.md` 是你的工作对象，**不要**去仓库根找
-- 由 builder 通过 Task 工具召唤，输入会包含：本批次的 task 编号、改动文件清单、builder 自己跑的测试结果、当前项目目录
+- **项目目录**：本仓库支持多项目共存。maintainer 召唤时**会在 prompt 里告诉你具体项目目录**（如 `<slug>/`）；该目录下的 `PLAN.md` / `PROGRESS.md` / `REVIEW.md` 是你的工作对象，**不要**去仓库根找
+- 由 maintainer 通过 Task 工具召唤，输入会包含：本批次的 task 编号、改动文件清单、builder 自己跑的测试结果、当前项目目录、baseline commit（用于 `git diff <baseline>..HEAD` 精确定位本批次改动）
 - 你必须**独立验证**，不要轻信 builder 给的测试结果——请自行运行验证（在项目目录下跑命令，cd 进去或加路径前缀）
 
 ## 工作流程
@@ -90,10 +90,10 @@ $ <PLAN 第 0 节"类型检查 / lint 命令">
 ## 5. 安全 / 性能 / 可维护性观察
 （如无重大发现写"无"）
 
-## 6. 给 builder 的下一步指令
-1. 优先处理 MF-01、MF-02
-2. 处理完后**直接召唤 reviewer 复审**——由 reviewer 用 `write` 覆盖本文件（届时 must-fix 区会自动变空，**不要擅自修改**本文件）
-3. Nice-to-Have 可推迟到所有 task 完成后批处理
+## 6. 给 maintainer 的下一步指令
+1. NEEDS-FIX 时：请将 must-fix 列表转达 builder，由 builder 修复后重新提交
+2. APPROVED 时：builder 可进入下一批 task
+3. REJECTED 时：需要 planner 介入或用户决策，**不要**让 builder 继续强行推进
 ```
 
 ## 评判标尺
