@@ -48,7 +48,7 @@ $ <PLAN 第 0 节"类型检查 / lint 命令">
 ## 5. 安全 / 性能 / 可维护性观察
 （如无重大发现写"无"）
 
-## 6. 给 builder 的下一步指令
-1. 优先处理 MF-01、MF-02
-2. 处理完后**直接召唤 reviewer 复审**——由 reviewer 用 `write` 覆盖本文件（届时 must-fix 区会自动变空，**不要擅自修改**本文件）
-3. Nice-to-Have 可推迟到所有 task 完成后批处理
+## 6. 给 maintainer 的下一步指令
+1. NEEDS-FIX 时：请将 must-fix 列表转达 builder，由 builder 修复后重新提交
+2. APPROVED 时：builder 可进入下一批 task
+3. REJECTED 时：需要 planner 介入或用户决策，**不要**让 builder 继续强行推进

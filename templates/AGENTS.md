@@ -42,10 +42,12 @@
 
 ## 工作流
 
-1. Planner 起草项目计划 → `<项目目录>/PLAN.md`（路径由用户确认）
-2. Builder 按 PLAN 逐 task 实现 → `<项目目录>/PROGRESS.md`
-3. Reviewer 独立验证 → `<项目目录>/REVIEW.md`
-4. Teacher 生成学习材料 → `<项目目录>/learning-notes/`
+所有项目工作通过 `maintainer` 统一入口：
+
+1. 用户告诉 maintainer 项目需求 → maintainer 调 planner 起草 PLAN.md
+2. maintainer 调 builder 逐批实现 task（每批 ≤ 3 个）
+3. maintainer 调 reviewer 独立验证每批产出
+4. maintainer 调 teacher 生成学习材料（可选）
 
 ## 环境契约
 

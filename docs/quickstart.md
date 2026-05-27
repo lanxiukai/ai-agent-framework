@@ -81,7 +81,7 @@ opencode
 }
 ```
 
-#### ③ 新增自定义 agent（追加到用户级 7 个 agent 之后）
+#### ③ 新增自定义 agent（追加到用户级 agent 列表之后）
 
 ```jsonc
 {
@@ -189,6 +189,4 @@ opencode
 
 ## 启动流程
 
-opencode 启动后，Tab 切到 `planner`，告诉它你想做什么——它会跟你确认 4 件事（语言 / 依赖管理 / 测试工具 / 环境约束），然后写出 `PLAN.md`。
-
-`PLAN.md` 写好后，**退出 session，重新 `opencode` 进入选 builder**。builder 按 task 顺序实现，每批 ≤ 3 个 → 跑测试 → 召唤 reviewer → 处理 must-fix → 继续下一批。
+opencode 启动后，Tab 切到 `maintainer`，告诉它你想做什么——maintainer 会调度 planner 写出 `PLAN.md`，然后调度 builder 逐批实现 task。每批完成后 maintainer 会调 reviewer 独立验证，确保质量后再推进下一批。

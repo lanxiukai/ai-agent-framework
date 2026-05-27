@@ -117,11 +117,9 @@ opencode
 ```
 
 启动后：
-1. Tab 切到 `planner`
+1. Tab 切到 `maintainer`
 2. 告诉它你的项目需求 + 项目名（slug，如 `ts-link-checker`）
-3. Planner 会在用户确认的目录下创建 `PLAN.md`
-4. PLAN 写好后**退出 session，重新 `opencode` 选 builder**
-5. Builder 按 task 顺序实现，每批 ≤ 3 个 → 跑测试 → 召唤 reviewer → 继续
+3. Maintainer 会调度 planner 起草 PLAN.md，然后调度 builder 逐批实现，每批完成后由 reviewer 独立验证
 
 ---
 
