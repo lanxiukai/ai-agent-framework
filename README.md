@@ -37,7 +37,7 @@
 
 - **`maintainer_flash`**（primary）：轻量版 maintainer——回答仓库结构/设计问题、代码导航、写笔记
 - **`aide`**（subagent）：maintainer 的廉价执行器（V4 Flash），承担可验证的审计/搜索/总结/批量编辑
-- **`consultant_1-4`**（subagent）：4 位独立 AI 顾问（Claude Opus 4.7 / GPT-5.5 / Gemini 3.5 Flash / DeepSeek V4 Pro），用户指令下提供多视角分析
+- **`consultant_1-4`**（subagent）：4 位独立 AI 顾问（Claude Opus 4.8 / GPT-5.5 / Gemini 3.5 Flash / DeepSeek V4 Pro），用户指令下提供多视角分析
 
 | 文件 | 由谁写 | 谁来读 | 作用 |
 |---|---|---|---|

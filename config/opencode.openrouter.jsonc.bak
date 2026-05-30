@@ -2,7 +2,7 @@
   "$schema": "https://opencode.ai/config.json",
   // ====================================================================
   // Backup config: think-intensive agents (planner, reviewer,
-  // maintainer) use OpenRouter → Claude Opus 4.7 / Sonnet 4.6 with
+  // maintainer) use OpenRouter → Claude Opus 4.8 / Sonnet 4.6 with
   // adaptive thinking; cost-intensive agents (builder, teacher, aide)
   // keep DeepSeek for efficiency.
   //
@@ -76,8 +76,8 @@
       "name": "OpenRouter",
       "options": { "apiKey": "{env:OPENROUTER_API_KEY}" },
       "models": {
-        "anthropic/claude-opus-4.7": {
-          "name": "Claude Opus 4.7 (1M)",
+        "anthropic/claude-opus-4.8": {
+          "name": "Claude Opus 4.8 (1M)",
           "limit": { "context": 1000000, "output": 128000 },
           "options": {
             "thinking": { "type": "adaptive" }
@@ -113,7 +113,7 @@
 
     "planner": {
       "mode": "subagent",
-      "model": "openrouter/anthropic/claude-opus-4.7",
+      "model": "openrouter/anthropic/claude-opus-4.8",
       "temperature": 1,
       "maxTokens": 131072,
       "maxSteps": 40,
@@ -186,7 +186,7 @@
 
     "reviewer": {
       "mode": "subagent",
-      "model": "openrouter/anthropic/claude-opus-4.7",
+      "model": "openrouter/anthropic/claude-opus-4.8",
       "temperature": 0,
       "maxTokens": 98304,
       "maxSteps": 40,
@@ -370,7 +370,7 @@
 
     "maintainer": {
       "mode": "primary",
-      "model": "openrouter/anthropic/claude-opus-4.7",
+      "model": "openrouter/anthropic/claude-opus-4.8",
       "temperature": 0.3,
       "maxTokens": 98304,
       "maxSteps": 60,
@@ -529,11 +529,11 @@
     // Consultants can read anything but may only write reports to docs/consults/.
     // ==================================================================
 
-    // consultant_1 — Claude Opus 4.7
+    // consultant_1 — Claude Opus 4.8
     // reasoning_effort: "xhigh" (deepest adaptive reasoning)
     "consultant_1": {
       "mode": "subagent",
-      "model": "openrouter/anthropic/claude-opus-4.7",
+      "model": "openrouter/anthropic/claude-opus-4.8",
       "temperature": 0.3,
       "maxTokens": 131072,
       "maxSteps": 40,

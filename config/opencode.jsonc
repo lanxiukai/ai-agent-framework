@@ -79,8 +79,8 @@
       "name": "OpenRouter",
       "options": { "apiKey": "{env:OPENROUTER_API_KEY}" },
       "models": {
-        "anthropic/claude-opus-4.7": {
-          "name": "Claude Opus 4.7 (1M)",
+        "anthropic/claude-opus-4.8": {
+          "name": "Claude Opus 4.8 (1M)",
           "limit": { "context": 1000000, "output": 128000 },
           "options": {
             "thinking": { "type": "adaptive" }
@@ -532,11 +532,11 @@
     // Consultants can read anything but may only write reports to docs/consults/.
     // ==================================================================
 
-    // consultant_1 — Claude Opus 4.7
+    // consultant_1 — Claude Opus 4.8
     // reasoning_effort: "xhigh" (deepest adaptive reasoning)
     "consultant_1": {
       "mode": "subagent",
-      "model": "openrouter/anthropic/claude-opus-4.7",
+      "model": "openrouter/anthropic/claude-opus-4.8",
       "temperature": 0.3,
       "maxTokens": 131072,
       "maxSteps": 40,
